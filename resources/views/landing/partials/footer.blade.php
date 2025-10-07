@@ -13,6 +13,7 @@
       </p>
     </div>
 
+    
     {{-- Columna 2: Navegación --}}
     <div>
       <h3 class="text-sm font-semibold text-slate-900">Navegación</h3>
