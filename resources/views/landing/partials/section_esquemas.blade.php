@@ -208,6 +208,13 @@
   /* Reveal */
   .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s, transform .6s}
   .reveal.show{opacity:1;transform:translateY(0)}
+
+  /* ===== Tipografía igual Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#esquemas {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 <script>

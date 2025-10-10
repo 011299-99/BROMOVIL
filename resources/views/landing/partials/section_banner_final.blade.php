@@ -44,7 +44,7 @@
         ¡Quiero iniciar ahora!
         <svg class="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5"
              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          
         </svg>
       </span>
       <span class="pointer-events-none absolute inset-0 rounded-full overflow-hidden">
@@ -57,4 +57,11 @@
 
 <style>
 @keyframes btnshine { 0% { transform: translateX(-120%); } 100% { transform: translateX(160%); } }
+
+/* ===== Tipografía igual (Poppins) ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section[class*="bg-cover"] {
+  font-family: 'Poppins', sans-serif;
+}
 </style>

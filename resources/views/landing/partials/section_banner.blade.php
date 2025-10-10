@@ -62,7 +62,6 @@
       <span class="relative z-[2] inline-flex items-center">
         Quiero ser distribuidor
         <svg class="ml-2 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
         </svg>
       </span>
       <span class="pointer-events-none absolute inset-0 z-[1] btn-shimmer"></span>

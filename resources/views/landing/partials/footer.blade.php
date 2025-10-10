@@ -5,7 +5,7 @@
     {{-- Columna 1: Logo / Intro --}}
     <div>
       <div class="flex items-center gap-2">
-        <img src="{{ asset('storage/img/logo.png') }}" alt="Bromovil" class="h-14 w-auto">
+        <img src="{{ asset('storage/img/logo_negro.png.jpeg') }}" alt="Bromovil" class="h-14 w-auto">
     
       </div>
       <p class="mt-3 text-sm text-slate-600 leading-relaxed">
@@ -54,7 +54,7 @@
   {{-- Copyright --}}
   <div class="border-t border-slate-300 relative">
     <p class="max-w-7xl mx-auto px-6 py-4 text-xs text-slate-500 text-center">
-      © 2025 Bromovil. Todos los derechos reservados.
+      Copyright ©2025 BROMOVIL Derechos reservados
     </p>
   </div>
 </footer>
@@ -72,6 +72,13 @@
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 6px 18px rgba(65,156,246,.4);
   }
+
+  /* ===== Tipografía igual a las demás secciones (Poppins) ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+footer {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 {{-- Font Awesome para íconos --}}

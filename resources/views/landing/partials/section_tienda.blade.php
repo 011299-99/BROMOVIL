@@ -129,4 +129,11 @@
     transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
   }
   .btn-cta-store:hover{ transform: translateY(-2px) scale(1.02); box-shadow:0 16px 34px rgba(65,156,246,.24); filter: brightness(1.03) }
+
+  /* ===== Tipografía igual a Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#tienda {
+  font-family: 'Poppins', sans-serif;
+}
 </style>

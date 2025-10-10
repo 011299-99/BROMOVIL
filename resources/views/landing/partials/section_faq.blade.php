@@ -104,5 +104,14 @@
 
 <script type="application/ld+json">
 {!! json_encode($schema, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) !!}
+
 </script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#faq {
+  font-family: 'Poppins', sans-serif;
+}
+</style>
 
