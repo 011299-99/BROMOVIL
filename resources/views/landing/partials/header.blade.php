@@ -37,7 +37,7 @@
          class="px-5 py-2 rounded-xl text-white text-sm font-semibold 
                 bg-gradient-to-r from-[#419cf6] to-[#844ff0] 
                 shadow-md hover:opacity-90 transition">
-         Administrar mis líneas →
+         Administrar mis líneas 
       </a>
       <a href="{{ route('distribuidor.form') }}"
          class="px-4 py-2 rounded-xl text-sm font-semibold text-[#25211e] 
