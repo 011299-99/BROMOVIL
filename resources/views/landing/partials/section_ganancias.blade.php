@@ -177,6 +177,13 @@
     content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:9999px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.15);
   }
   .toggle:checked::after{ transform: translateX(20px) }
+
+  /* ===== Tipografía igual a Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#ganancias {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 <script>

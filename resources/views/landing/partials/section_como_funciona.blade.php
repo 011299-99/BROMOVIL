@@ -138,6 +138,13 @@
   @media (prefers-reduced-motion:reduce){
     .reveal{opacity:1 !important; transform:none !important; transition:none !important}
   }
+  
+  /* ===== Tipografía igual a Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#como-funciona {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 <script>

@@ -133,6 +133,13 @@
     transform: translate(-50%, -50%); border:2px solid #fff;
     z-index: 2;
   }
+
+  /* ===== Tipografía igual a Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#mapa {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 <script>

@@ -56,3 +56,12 @@
     </div>
   </div>
 </section>
+
+<style>
+  /* ===== Tipografía igual a las demás secciones ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#testimonios {
+  font-family: 'Poppins', sans-serif;
+}
+</style>
