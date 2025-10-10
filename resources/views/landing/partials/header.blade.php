@@ -16,11 +16,9 @@
   </div>
 </div>
 
-
-
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-    {{-- Logo --}}
+  
     <a href="{{ route('home') }}" class="shrink-0">
       <img src="{{ asset('storage/Img/logo.png') }}" alt="Bromovil" class="h-9 w-auto block">
     </a>
