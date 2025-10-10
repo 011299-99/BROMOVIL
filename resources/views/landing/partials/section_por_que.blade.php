@@ -165,6 +165,12 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* ===== Tipografía igual Bromovil ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+section#por-que-bromovil {
+  font-family: 'Poppins', sans-serif;
+}
 </style>
 
 <script>

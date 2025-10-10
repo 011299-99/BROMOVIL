@@ -17,28 +17,26 @@
 
   {{-- Contenido --}}
   <div class="relative max-w-7xl mx-auto px-6 py-28 md:py-40 text-center">
-{{-- H1 con shimmer general + reveal --}}
-<h1 class="reveal text-4xl md:text-6xl font-extrabold leading-tight tracking-tight 
-           text-slate-50 drop-shadow-[0_2px_8px_rgba(0,0,0,.35)] relative overflow-hidden">
-  ¡Conviértete en distribuidor autorizado de
-  <span class="inline-block align-baseline bg-clip-text text-transparent 
-               bg-gradient-to-r from-[#419cf6] to-[#844ff0]">
-    Bromovil
-  </span>!
-  {{-- Shimmer aplicado a todo el H1 --}}
-  <i class="pointer-events-none absolute inset-0 -skew-x-12 
-            bg-gradient-to-r from-transparent via-white/25 to-transparent animate-shimmer"></i>
-</h1>
-
+    {{-- H1 con nuevo estilo tipográfico --}}
+    <h1 class="reveal font-extrabold leading-tight tracking-tight text-slate-50 drop-shadow-[0_2px_8px_rgba(0,0,0,.35)] relative overflow-hidden">
+      <span class="block text-[42px] md:text-[70px]">
+        <span class="text-white font-extrabold">¡Conviértete en distribuidor autorizado de </span>
+        <span class="inline-block align-baseline bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0] font-black tracking-tight">
+           Bromovil
+        </span>
+        <span class="text-white font-extrabold">!</span>
+      </span>
+      <i class="pointer-events-none absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-shimmer"></i>
+    </h1>
 
     {{-- Subtítulo con reveal --}}
-    <p class="reveal mt-5 text-lg md:text-2xl text-slate-200/95 max-w-3xl mx-auto leading-relaxed">
+    <p class="reveal mt-6 text-lg md:text-2xl text-slate-200/90 max-w-3xl mx-auto leading-relaxed font-[450]">
       Emprende un negocio <span class="font-semibold text-[#F9FF00]">rentable</span> con 
       <span class="font-semibold text-[#F9FF00]">baja inversión</span>, 
       <span class="font-semibold text-[#F9FF00]">altas comisiones</span> y soporte diario.
     </p>
 
-    {{-- Bullets “vidrio oscuro” con borde gradiente + micro-interacciones + stagger --}}
+    {{-- Bullets “vidrio oscuro” --}}
     <ul class="mt-8 flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
       @php $items = ['Sin contratos','Capacitaciones constantes','Residuales de por vida']; @endphp
       @foreach ($items as $i => $item)
@@ -54,8 +52,8 @@
       @endforeach
     </ul>
 
-    {{-- CTA con shimmer + glow + reveal --}}
- <a href="{{ route('distribuidor.form') }}"
+    {{-- CTA --}}
+    <a href="{{ route('distribuidor.form') }}"
        class="reveal mt-10 inline-flex items-center justify-center px-10 py-4 rounded-full
               text-base md:text-lg font-semibold text-white shadow-xl
               bg-gradient-to-r from-[#419cf6] to-[#844ff0] relative overflow-hidden
@@ -68,82 +66,21 @@
         </svg>
       </span>
       <span class="pointer-events-none absolute inset-0 z-[1] btn-shimmer"></span>
-      <span class="pointer-events-none absolute -inset-2 rounded-full blur-2xl opacity-0 hover:opacity-30 transition-opacity"></span>
     </a>
   </div>
 </section>
 
 <style>
-  /* ===== Reveal & motion ===== */
-  .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s ease; }
-  .reveal.show { opacity: 1; transform: translateY(0); }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
-    .animate-shimmer, .btn-shimmer { animation: none !important; }
-  }
-
-  /* ===== Shimmer texto / CTA ===== */
-  @keyframes shimmer { 0%{transform:translateX(-160%)} 100%{transform:translateX(160%)} }
-  .animate-shimmer { animation: shimmer 2.2s ease-in-out infinite; }
-  .btn-shimmer {
-    background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,.25) 45%, rgba(255,255,255,.55) 50%, rgba(255,255,255,.25) 55%, transparent 100%);
-    transform: translateX(-120%); filter: blur(.5px);
-    animation: shimmer 1.8s ease-in-out infinite;
-    mix-blend-mode: screen;
-  }
-
-  /* ===== Chips oscuros  ===== */
-  .pro-chip-dark {
-    --chip-bg: rgba(9, 12, 22, .55);
-    --chip-text: rgba(235, 240, 255, .95);
-    display: inline-flex; align-items: center; gap: .55rem;
-    padding: .6rem 1rem; border-radius: 9999px;
-    background: var(--chip-bg); backdrop-filter: blur(8px);
-    border: 1px solid rgba(148, 163, 184, .15);
-    position: relative;
-    transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
-    box-shadow: 0 4px 14px rgba(2, 6, 23, .35);
-    animation: chipIn .6s ease forwards; animation-delay: var(--delay, 0ms);
-  }
-  .pro-chip-dark::before {
-    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
-    background: linear-gradient(90deg, rgba(65,156,246,.35), rgba(132,79,240,.35));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
-  }
-  .pro-chip-dark:hover { transform: translateY(-2px); border-color: rgba(148,163,184,.28); box-shadow: 0 10px 22px rgba(2,6,23,.45); }
-  .pro-chip-dark__text { color: var(--chip-text); font-weight: 600; font-size: .97rem; letter-spacing: .1px; }
-
-  .pro-chip-dark__icon {
-    position: relative; display: inline-grid; place-items: center;
-    width: 30px; height: 30px; border-radius: 9999px; overflow: hidden;
-    background: radial-gradient(90% 90% at 50% 50%, #5aa9ff, #7b56db 60%, #7b56db);
-    box-shadow: inset 0 0 10px rgba(255,255,255,.07), 0 4px 10px rgba(16,24,40,.4);
-  }
-  .pro-chip-dark__check { width: 14px; height: 14px; color: #fff; transform: scale(.92); transition: transform .22s ease; }
-  .pro-chip-dark:hover .pro-chip-dark__check { transform: scale(1); }
-
-  .pro-chip-dark__ring {
-    position: absolute; inset: -4px; border-radius: inherit; pointer-events: none;
-    background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,.18), transparent 62%);
-    opacity: 0; transform: scale(.85); transition: opacity .25s ease, transform .25s ease;
-  }
-  .pro-chip-dark:hover .pro-chip-dark__ring { opacity: 1; transform: scale(1); }
-
-  @keyframes chipIn { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+/* ===== Tipografía moderna estilo “Cambia vidas” ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+section#inicio {
+  font-family: 'Poppins', sans-serif;
+}
+h1 span {
+  letter-spacing: -0.02em;
+}
+h1 span.bg-clip-text {
+  font-size: 1em;
+  background-clip: text;
+}
 </style>
-
-<script>
-  // Reveal on scroll
-  (function () {
-    const els = document.querySelectorAll('.reveal');
-    if (!('IntersectionObserver' in window) || !els.length) {
-      els.forEach(el => el.classList.add('show'));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
-    }, { threshold: 0.15 });
-    els.forEach(el => io.observe(el));
-  })();
-</script>
