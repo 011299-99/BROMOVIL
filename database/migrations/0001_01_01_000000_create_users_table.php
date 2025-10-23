@@ -13,12 +13,21 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+
+            // 👇 Campos solicitados
+            $table->string('first_name', 120);
+            $table->string('last_name', 120);
             $table->string('email')->unique();
+            $table->string('phone', 30);      // Si quieres que sea único, cambia a ->unique()
+
+            // Compatibles con Breeze/Jetstream si los usas
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // Útil para búsquedas por teléfono (quítalo si no lo necesitas)
+            $table->index('phone');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -42,8 +51,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
+        // Suele ser más seguro borrar primero dependencias
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

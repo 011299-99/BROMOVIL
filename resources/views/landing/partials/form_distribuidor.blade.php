@@ -47,71 +47,36 @@
 
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
-            <label class="form-label" for="name">Nombre completo *</label>
-            <input class="form-input" type="text" id="name" name="name" placeholder="Tu nombre y apellidos" required value="{{ old('name') }}">
-            @error('name') <p class="form-error">{{ $message }}</p> @enderror
+            <label class="form-label" for="first_name">Nombre *</label>
+            <input class="form-input" type="text" id="first_name" name="first_name" placeholder="Tu nombre" required value="{{ old('first_name') }}" autocomplete="given-name">
+            @error('first_name') <p class="form-error">{{ $message }}</p> @enderror
+          </div>
+
+          <div>
+            <label class="form-label" for="last_name">Apellido *</label>
+            <input class="form-input" type="text" id="last_name" name="last_name" placeholder="Tu apellido" required value="{{ old('last_name') }}" autocomplete="family-name">
+            @error('last_name') <p class="form-error">{{ $message }}</p> @enderror
+          </div>
+
+          <div>
+            <label class="form-label" for="email">Correo electrónico *</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="tunombre@correo.com" required value="{{ old('email') }}" autocomplete="email">
+            @error('email') <p class="form-error">{{ $message }}</p> @enderror
           </div>
 
           <div>
             <label class="form-label" for="phone">Teléfono / WhatsApp *</label>
-            <input class="form-input" type="tel" id="phone" name="phone" placeholder="55 1234 5678" required value="{{ old('phone') }}">
+            <input class="form-input" type="tel" id="phone" name="phone" placeholder="55 1234 5678" required value="{{ old('phone') }}" inputmode="tel" autocomplete="tel">
             @error('phone') <p class="form-error">{{ $message }}</p> @enderror
           </div>
 
-          <div>
-            <label class="form-label" for="email">Email *</label>
-            <input class="form-input" type="email" id="email" name="email" placeholder="tunombre@correo.com" required value="{{ old('email') }}">
-            @error('email') <p class="form-error">{{ $message }}</p> @enderror
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="form-label" for="state">Estado *</label>
-              <input class="form-input" type="text" id="state" name="state" placeholder="CDMX, Jalisco..." required value="{{ old('state') }}">
-              @error('state') <p class="form-error">{{ $message }}</p> @enderror
-            </div>
-            <div>
-              <label class="form-label" for="city">Ciudad *</label>
-              <input class="form-input" type="text" id="city" name="city" placeholder="Tu ciudad" required value="{{ old('city') }}">
-              @error('city') <p class="form-error">{{ $message }}</p> @enderror
-            </div>
-          </div>
-
-          <div>
-            <label class="form-label" for="interest">Interés principal *</label>
-            <select class="form-input" id="interest" name="interest" required>
-              <option value="">Selecciona una opción</option>
-              <option @selected(old('interest')==='SIMs Movilidad')>SIMs Movilidad</option>
-              <option @selected(old('interest')==='eSIM')>eSIM</option>
-              <option @selected(old('interest')==='MiFi')>MiFi</option>
-            </select>
-            @error('interest') <p class="form-error">{{ $message }}</p> @enderror
-          </div>
-
-          <div>
-            <label class="form-label" for="volume">Volumen estimado / mes</label>
-            <div class="flex items-center gap-3">
-              <input id="volume" name="volume" type="range" min="10" max="300" step="10" value="{{ old('volume', 50) }}" class="flex-1 accent-[#419cf6]">
-              <span id="volumeOut" class="inline-flex min-w-[70px] justify-center rounded-full border px-2 py-1 text-xs text-slate-700 bg-slate-50">50 SIMs</span>
-            </div>
-            @error('volume') <p class="form-error">{{ $message }}</p> @enderror
-          </div>
-
           <div class="sm:col-span-2">
-            <label class="form-label" for="message">Cuéntanos más (opcional)</label>
-            <textarea class="form-input min-h-[110px]" id="message" name="message" placeholder="Tu experiencia, metas, dudas...">{{ old('message') }}</textarea>
-            @error('message') <p class="form-error">{{ $message }}</p> @enderror
+            <label class="form-label" for="password">Contraseña *</label>
+            <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
+            @error('password') <p class="form-error">{{ $message }}</p> @enderror
           </div>
 
-          <div class="sm:col-span-2">
-            <label class="inline-flex items-start gap-3 text-sm text-slate-600">
-              <input type="checkbox" id="consent" name="consent" class="mt-1 h-4 w-4 rounded border-slate-300 text-[#419cf6]" {{ old('consent') ? 'checked' : '' }} required>
-              <span>He leído y acepto el <a href="#" class="text-[#419cf6] hover:underline">Aviso de Privacidad</a>.</span>
-            </label>
-            @error('consent') <p class="form-error">{{ $message }}</p> @enderror
-          </div>
-
-          {{-- Honeypot antispam --}}
+          {{-- Honeypot antispam (opcional, no se guarda en BD) --}}
           <div class="hidden">
             <label>Si eres humano, deja esto vacío</label>
             <input type="text" name="website" tabindex="-1" autocomplete="off">
@@ -152,12 +117,6 @@
 
 <script>
   (function () {
-    const vol = document.getElementById('volume');
-    const out = document.getElementById('volumeOut');
-    if (vol && out) {
-      const sync = () => out.textContent = `${vol.value} SIMs`;
-      vol.addEventListener('input', sync); sync();
-    }
     const form = document.getElementById('apply-form');
     const btn  = document.getElementById('btn-submit');
     const txt  = document.getElementById('btn-text');

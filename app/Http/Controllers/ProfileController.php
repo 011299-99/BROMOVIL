@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Validation\Rules\Password as PasswordRule;
+
 
 class ProfileController extends Controller
 {
@@ -20,7 +22,28 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
+public function editPassword(): \Illuminate\View\View
+{
+    return view('profile.change-password');
+}
 
+public function updatePassword(Request $request): RedirectResponse
+{
+    $validated = $request->validate([
+        'current_password' => ['required', 'current_password'], // verifica la contraseña actual
+        'password'         => ['required', 'confirmed', PasswordRule::min(8)],
+    ]);
+
+    // Gracias al cast 'password' => 'hashed' en tu modelo User, se hashea solo
+    $request->user()->update([
+        'password' => $validated['password'],
+    ]);
+
+    // (Opcional) Cerrar otras sesiones:
+    // $request->session()->regenerate();
+
+    return back()->with('status', 'password-updated');
+}
     /**
      * Update the user's profile information.
      */
