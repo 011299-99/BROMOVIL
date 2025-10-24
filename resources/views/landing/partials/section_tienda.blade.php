@@ -17,18 +17,26 @@
     </div>
 
     @php
+      // Tu listado original (sin tocar). Si algún día quieres, agrega 'price' => 123
       $prods = [
         ['name'=>'Playeras', 'img'=>'storage/img/Playeras.jpeg', 'badge'=>'Top'],
-        ['name'=>'Gorras',   'img'=>'storage/img/GORRA.png',   'badge'=>'Nuevo'],
+        ['name'=>'Gorras',   'img'=>'storage/img/GORRA.png',     'badge'=>'Nuevo'],
         ['name'=>'Lonas',    'img'=>'storage/img/Lonas.jpeg',    'badge'=>null],
         ['name'=>'Stands',   'img'=>'storage/img/Stands.jpeg',   'badge'=>null],
         ['name'=>'Flyers',   'img'=>'storage/img/FLAYERS.png',   'badge'=>'Top'],
-        ['name'=>'Plumas',   'img'=>'storage/img/Pluma.jpeg',   'badge'=>null],
+        ['name'=>'Plumas',   'img'=>'storage/img/Pluma.jpeg',    'badge'=>null],
       ];
     @endphp
 
     <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @foreach($prods as $p)
+      @php
+        // Fallbacks sin cambiar tu array original
+        $sku   = 'SKU-'.str_pad($loop->iteration, 3, '0', STR_PAD_LEFT);
+        $price = $p['price'] ?? 0;             // si no hay price en el array, usa 0
+        $img   = asset($p['img']);             // url absoluta de la imagen
+      @endphp
+
       <article class="store-card group">
         <span class="store-card__border"></span>
 
@@ -53,9 +61,14 @@
           <h3 class="text-base md:text-lg font-semibold text-slate-900">{{ $p['name'] }}</h3>
           <p class="mt-1 text-sm text-slate-600">Branding oficial para reforzar tu presencia y confianza.</p>
 
-           <div class="mt-4 flex items-center justify-between">
-            {{-- Al hacer clic te lleva al carrito --}}
-            <a href="{{ $toCart }}" class="btn-cta-store">
+          <div class="mt-4 flex items-center justify-between">
+            {{-- Comprar: guarda en localStorage y redirige al carrito --}}
+            <a href="{{ $toCart }}"
+               class="btn-cta-store js-buy-now"
+               data-sku="{{ $sku }}"
+               data-title="{{ $p['name'] }}"
+               data-price="{{ $price }}"
+               data-img="{{ $img }}">
               Comprar
               <svg class="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -128,7 +141,28 @@
   }
   .btn-cta-store:hover{ transform: translateY(-2px) scale(1.02); box-shadow:0 16px 34px rgba(65,156,246,.24); filter: brightness(1.03) }
 
-  /* ===== Tipografía igual a Bromovil ===== */
+  /* Tipografía */
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
   section#tienda { font-family: 'Poppins', sans-serif; }
 </style>
+
+<script>
+/* ================== AÑADIR AL CARRITO Y REDIRIGIR ==================
+   - Captura el click en .js-buy-now
+   - Guarda {sku,title,price,qty,img} en localStorage (bm_cart_v1)
+   - Navega al carrito (href del <a>)
+*/
+(()=>{const KEY='bm_cart_v1';
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('.js-buy-now'); if(!a) return;
+    e.preventDefault();
+    const d=a.dataset;
+    let items=[]; try{ items=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{}
+    const i=items.findIndex(x=>x.sku===d.sku);
+    if(i>-1){ items[i].qty=(+items[i].qty||1)+1; items[i].img=items[i].img||d.img; }
+    else{ items.push({sku:d.sku,title:d.title,price:+d.price||0,qty:1,img:d.img}); }
+    localStorage.setItem(KEY, JSON.stringify(items));
+    location.href=a.href;
+  },false);
+})();
+</script>
