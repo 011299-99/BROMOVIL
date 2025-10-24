@@ -22,7 +22,7 @@
         <nav class="hidden md:flex items-center gap-2">
           <a href="#paquetes"  class="top-pill">Paquetes</a>
           <a href="#sipab"     class="top-pill">SIPAB</a>
-          <a href="#ganancias" class="top-pill">Ganancias</a>
+          <a href="#gestion"   class="top-pill">Ganancias</a>
           <a href="#cobertura" class="top-pill">Cobertura</a>
           <a href="#soporte"   class="top-pill">Soporte</a>
 
@@ -39,7 +39,7 @@
         <div class="flex items-center gap-2 w-max">
           <a href="#paquetes"  class="top-pill">Paquetes</a>
           <a href="#sipab"     class="top-pill">SIPAB</a>
-          <a href="#ganancias" class="top-pill">Ganancias</a>
+          <a href="#gestion"   class="top-pill">Ganancias</a>
           <a href="#cobertura" class="top-pill">Cobertura</a>
           <a href="#soporte"   class="top-pill">Soporte</a>
 
@@ -229,7 +229,7 @@
           </article>
         </div>
 
-        {{-- Paneles eSIM & MiFi (placeholder, también agregables al carrito si les pones .js-add-cart) --}}
+        {{-- Paneles eSIM & MiFi --}}
         <div class="pk-panel mt-10 grid md:grid-cols-3 gap-6 hidden" data-panel="esim">
           @foreach ([['t'=>"eSIM – Starter",'p'=>199,'sku'=>'ESIM-START'],
                      ['t'=>"eSIM – Plus",'p'=>349,'sku'=>'ESIM-PLUS'],
@@ -286,7 +286,7 @@
       </div>
     </section>
 
-    {{-- 2. SIPAB (sin rutas aún -> deshabilitado) --}}
+    {{-- 2. SIPAB --}}
     <div id="sipab" class="card p-6 scroll-mt-28">
       <div class="flex items-center gap-3">
         <div class="ico bg-grad-sky"><i class="fas fa-plug"></i></div>
@@ -303,215 +303,265 @@
       </div>
     </div>
 
-    {{-- 3. Gestión del negocio --}}
-<section id="gestion" class="card p-6 scroll-mt-28">
-  <div class="flex flex-wrap items-center gap-3">
-    <div class="ico bg-grad-green"><i class="fas fa-chart-line"></i></div>
-    <h3 class="section-title">Gestión del negocio</h3>
+    {{-- 3. Gestión del negocio (REDISEÑO) --}}
+    <section id="gestion" class="card card-gst p-0 overflow-hidden scroll-mt-28">
+      {{-- Header decorado --}}
+      <div class="gst-head">
+        <div class="gst-head__bg"></div>
+        <div class="gst-head__inner px-6 py-6">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="ico ico-ghost"><i class="fas fa-chart-line"></i></div>
+            <h3 class="section-title text-white">Gestión del negocio</h3>
+            <span class="gst-badge">Panel</span>
+          </div>
 
-    {{-- Filtros / Exportaciones --}}
-    <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET" class="ml-auto flex flex-wrap items-end gap-3">
-      <div>
-        <label class="label text-xs block mb-1">Desde</label>
-        <input type="date" name="from" value="{{ request('from') }}" class="input-number w-40">
-      </div>
-      <div>
-        <label class="label text-xs block mb-1">Hasta</label>
-        <input type="date" name="to" value="{{ request('to') }}" class="input-number w-40">
-      </div>
-      <button class="chip" type="submit">Aplicar</button>
-
-      {{-- Exportar Excel/PDF conservando filtros --}}
-      <a class="chip" href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-        <i class="fas fa-file-excel mr-1"></i> Excel
-      </a>
-      <a class="chip" target="_blank" href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-        <i class="fas fa-file-pdf mr-1"></i> PDF
-      </a>
-    </form>
-  </div>
-
-  {{-- Acciones --}}
-  <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <a href="{{ $r('comisiones.index') }}" class="action-tile">
-      <div class="tt">Comisiones</div>
-      <div class="ds">Historial y estado</div>
-    </a>
-
-    <button type="button" class="action-tile" data-open="#modal-calc">
-      <div class="tt">Calculadora</div>
-      <div class="ds">Estimador de residuales</div>
-    </button>
-
-    <a href="{{ $r('lineas.index') }}" class="action-tile">
-      <div class="tt">Mis líneas</div>
-      <div class="ds">Activas / preactivadas</div>
-    </a>
-
-    <a href="{{ $r('reports.index') }}" class="action-tile">
-      <div class="tt">Reportes</div>
-      <div class="ds">Excel / PDF</div>
-    </a>
-  </div>
-
-  {{-- Preview de últimos movimientos (opcional: conecta a tu backend) --}}
-  @php
-    // Si no pasas datos desde el controlador, puedes simular algunos para que se vea presentable
-    $preview = $preview ?? collect([
-      (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
-      (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
-      (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
-    ]);
-  @endphp
-
-  <div class="mt-6">
-    <div class="flex items-center justify-between">
-      <h4 class="font-semibold text-slate-900">Resumen rápido</h4>
-      <a href="{{ $r('comisiones.index') }}" class="text-sm text-blue-600 hover:underline">Ver todo →</a>
-    </div>
-
-    <div class="mt-3 overflow-x-auto">
-      <table class="min-w-full text-sm border border-slate-200 rounded-xl overflow-hidden">
-        <thead class="bg-slate-50 text-slate-600">
-          <tr>
-            <th class="px-4 py-2 text-left">Fecha</th>
-            <th class="px-4 py-2 text-left">Concepto</th>
-            <th class="px-4 py-2 text-left">Plan</th>
-            <th class="px-4 py-2 text-right">Monto</th>
-            <th class="px-4 py-2 text-right">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($preview as $m)
-            <tr class="border-t">
-              <td class="px-4 py-2">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
-              <td class="px-4 py-2">{{ $m->concepto }}</td>
-              <td class="px-4 py-2">{{ $m->plan }}</td>
-              <td class="px-4 py-2 text-right">${{ number_format($m->monto,2) }}</td>
-              <td class="px-4 py-2 text-right"><span class="pill">{{ ucfirst($m->estado) }}</span></td>
-            </tr>
-          @empty
-            <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td></tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-{{-- Modal Calculadora --}}
-<div id="modal-calc" class="fixed inset-0 z-50 hidden">
-  <div class="absolute inset-0 bg-black/50" data-close="#modal-calc"></div>
-  <div class="absolute inset-x-0 top-10 mx-auto max-w-5xl px-6">
-    <div class="card p-0 overflow-hidden">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h3 class="font-semibold text-slate-900">Calcula tu potencial de ganancias</h3>
-        <button class="chip" data-close="#modal-calc">Cerrar</button>
-      </div>
-      <div class="p-6">
-        {{-- === Calculadora (IDs con prefijo calc-) === --}}
-        <section id="calc-ganancias" class="bg-[radial-gradient(ellipse_at_top,_#f8faff_0%,_#ffffff_60%)]">
-          <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6">
-            <div class="card p-6">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-slate-900">Simulación</h3>
-                <span class="badge">Ganancias aproximadas</span>
-              </div>
-
-              <div id="calc-plan-wrap" class="mt-6 field">
-                <label class="label">Plan</label>
-                <div class="mt-2 flex flex-wrap gap-2">
-                  <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
-                  <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
-                  <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
-                </div>
-                <p class="helper mt-2">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
-              </div>
-
-              <div class="mt-6 field">
-                <label class="label">SIMs vendidas / mes</label>
-                <div class="mt-2 flex flex-wrap items-center gap-2">
-                  <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
-                  <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
-                  <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
-                  <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
-                  <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
-                  <span class="ml-auto text-xs text-slate-500">Valor actual: <b id="calc-out-sims">0</b></span>
-                </div>
-                <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
-              </div>
-
-              <div id="calc-porta-section" class="mt-6 field">
-                <label class="label">Bono por portabilidad (por activación)</label>
-                <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
-                  <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
-                  <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
-                  <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
-                  <div class="input-wrp money">
-                    <span class="input-prefix">$</span>
-                    <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24">
-                    <span class="input-suffix">MXN</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-6 field">
-                <label class="label">Comisión residual</label>
-                <div class="mt-2 flex flex-wrap items-center gap-3">
-                  <span class="pill" id="calc-out-residual-badge">4%</span>
-                  <label class="flex items-center gap-2 text-sm select-none">
-                    <input id="calc-in-doble" type="checkbox" class="toggle">
-                    <span>Activaste + de 30 líneas (duplica a 8%)</span>
-                  </label>
-                </div>
-                <p class="helper mt-2">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
-
-                <div class="mt-4">
-                  <label class="label">Recargas <u>totales</u> del mes</label>
-                  <div class="mt-2 flex flex-wrap gap-2">
-                    <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
-                    <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
-                    <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24">
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-6 field">
-                <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
-                  <span class="helper">Monto por recarga</span>
-                  <div class="input-wrp money">
-                    <span class="input-prefix">$</span>
-                    <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28">
-                    <span class="input-suffix">MXN</span>
-                  </div>
-                  <div class="flex gap-2">
-                    <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
-                    <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
-                    <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
-                  </div>
-                </div>
-              </div>
+          {{-- Mini KPIs --}}
+          <div class="mt-5 grid sm:grid-cols-3 gap-3">
+            <div class="stat-glass">
+              <div class="stat-k">Comisiones del mes</div>
+              <div class="stat-v brand-text">$8,420</div>
             </div>
-
-            <div class="card p-6 lg:sticky lg:top-6 h-fit">
-              <h3 class="font-semibold text-slate-900">Resultados estimados</h3>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                <div class="stat"><div class="stat-k">Ganancia por venta</div><div id="calc-out-venta" class="stat-v">$0.00</div></div>
-                <div class="stat"><div class="stat-k">Comisión residual por activación</div><div id="calc-out-residual" class="stat-v">$0.00</div></div>
-                <div class="stat"><div class="stat-k">Ganancia por recarga</div><div id="calc-out-sipab" class="stat-v">$0.00</div></div>
-                <div class="col-span-2 stat-big">
-                  <div class="stat-k">Ingreso total estimado / mes</div>
-                  <div id="calc-out-total" class="stat-v-big">$0.00</div>
-                </div>
-              </div>
+            <div class="stat-glass">
+              <div class="stat-k">Líneas activadas</div>
+              <div class="stat-v text-white">37</div>
+            </div>
+            <div class="stat-glass">
+              <div class="stat-k">Recargas procesadas</div>
+              <div class="stat-v text-white">182</div>
             </div>
           </div>
-        </section>
-        {{-- === /Calculadora --}}
+        </div>
+      </div>
+
+      {{-- Cuerpo --}}
+      <div class="p-6">
+        {{-- Barra de filtros sticky --}}
+        <div class="gst-filters sticky top-4 z-10">
+          <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET" class="gst-filters__inner">
+            <div>
+              <label class="label text-xs block mb-1">Desde</label>
+              <input type="date" name="from" value="{{ request('from') }}" class="input-number inpt">
+            </div>
+            <div>
+              <label class="label text-xs block mb-1">Hasta</label>
+              <input type="date" name="to" value="{{ request('to') }}" class="input-number inpt">
+            </div>
+            <button class="chip chip-primary" type="submit"><i class="fas fa-filter mr-1"></i> Aplicar</button>
+
+            <div class="ml-auto flex items-center gap-2">
+              <a class="chip" href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+                <i class="fas fa-file-excel mr-1"></i> Excel
+              </a>
+              <a class="chip" target="_blank" href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+                <i class="fas fa-file-pdf mr-1"></i> PDF
+              </a>
+            </div>
+          </form>
+        </div>
+
+        {{-- Acciones --}}
+        <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <a href="{{ $r('comisiones.index') }}" class="action-tile atile">
+            <div class="tt"><i class="fas fa-wallet mr-2"></i>Comisiones</div>
+            <div class="ds">Historial y estado</div>
+          </a>
+
+          <button type="button" class="action-tile atile" data-open="#modal-calc">
+            <div class="tt"><i class="fas fa-calculator mr-2"></i>Calculadora</div>
+            <div class="ds">Estimador de residuales</div>
+          </button>
+
+          <a href="{{ $r('lineas.index') }}" class="action-tile atile">
+            <div class="tt"><i class="fas fa-sim-card mr-2"></i>Mis líneas</div>
+            <div class="ds">Activas / preactivadas</div>
+          </a>
+
+          <a href="{{ $r('reports.index') }}" class="action-tile atile">
+            <div class="tt"><i class="fas fa-chart-pie mr-2"></i>Reportes</div>
+            <div class="ds">Excel / PDF</div>
+          </a>
+        </div>
+
+        {{-- Preview de últimos movimientos --}}
+        @php
+          $preview = $preview ?? collect([
+            (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
+            (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
+            (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
+          ]);
+        @endphp
+
+        <div class="mt-6">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold text-slate-900">Resumen rápido</h4>
+            <a href="{{ $r('comisiones.index') }}" class="text-sm text-blue-600 hover:underline">Ver todo →</a>
+          </div>
+
+          <div class="mt-3 overflow-x-auto">
+            <table class="gst-table min-w-full text-sm">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Concepto</th>
+                  <th>Plan</th>
+                  <th class="text-right">Monto</th>
+                  <th class="text-right">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($preview as $m)
+                  @php
+                    $state = strtolower($m->estado);
+                    $cls = $state === 'pagado' ? 'ok' : ($state === 'pendiente' ? 'warn' : 'muted');
+                  @endphp
+                  <tr>
+                    <td>{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
+                    <td>{{ $m->concepto }}</td>
+                    <td>{{ $m->plan }}</td>
+                    <td class="text-right">${{ number_format($m->monto,2) }}</td>
+                    <td class="text-right"><span class="pill pill-{{ $cls }}">{{ ucfirst($m->estado) }}</span></td>
+                  </tr>
+                @empty
+                  <tr><td colspan="5" class="empty">Sin movimientos en el rango seleccionado.</td></tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{-- Modal Calculadora (REDISEÑO) --}}
+    <div id="modal-calc" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close="#modal-calc"></div>
+      <div class="absolute inset-x-0 top-10 mx-auto max-w-5xl px-6 animate-in">
+        <div class="calc-wrap">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-white/20">
+            <h3 class="font-semibold text-white">Calcula tu potencial de ganancias</h3>
+            <button class="chip chip-white" data-close="#modal-calc">Cerrar</button>
+          </div>
+
+          <div class="p-6">
+            <section id="calc-ganancias">
+              <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6">
+                {{-- Panel de inputs --}}
+                <div class="card glass p-6">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-semibold text-white">Simulación</h3>
+                    <span class="badge badge-ghost">Ganancias aproximadas</span>
+                  </div>
+
+                  <div id="calc-plan-wrap" class="mt-6 field">
+                    <label class="label text-white/90">Plan</label>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
+                      <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
+                      <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
+                    </div>
+                    <p class="helper mt-2 text-white/70">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
+                  </div>
+
+                  <div class="mt-6 field">
+                    <label class="label text-white/90">SIMs vendidas / mes</label>
+                    <div class="mt-2 flex flex-wrap items-center gap-2">
+                      <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
+                      <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
+                      <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
+                      <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
+                      <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
+                      <span class="ml-auto text-xs text-white/70">Valor actual: <b id="calc-out-sims">0</b></span>
+                    </div>
+                    <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
+                  </div>
+
+                  <div id="calc-porta-section" class="mt-6 field">
+                    <label class="label text-white/90">Bono por portabilidad (por activación)</label>
+                    <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
+                      <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
+                      <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
+                      <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
+                      <div class="input-wrp money">
+                        <span class="input-prefix">$</span>
+                        <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24 inpt">
+                        <span class="input-suffix">MXN</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 field">
+                    <label class="label text-white/90">Comisión residual</label>
+                    <div class="mt-2 flex flex-wrap items-center gap-3">
+                      <span class="pill pill-dark" id="calc-out-residual-badge">4%</span>
+                      <label class="flex items-center gap-2 text-sm select-none text-white/80">
+                        <input id="calc-in-doble" type="checkbox" class="toggle">
+                        <span>Activaste + de 30 líneas (duplica a 8%)</span>
+                      </label>
+                    </div>
+                    <p class="helper mt-2 text-white/70">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
+
+                    <div class="mt-4">
+                      <label class="label text-white/90">Recargas <u>totales</u> del mes</label>
+                      <div class="mt-2 flex flex-wrap gap-2">
+                        <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
+                        <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
+                        <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24 inpt">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 field">
+                    <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
+                      <span class="helper text-white/80">Monto por recarga</span>
+                      <div class="input-wrp money">
+                        <span class="input-prefix">$</span>
+                        <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28 inpt">
+                        <span class="input-suffix">MXN</span>
+                      </div>
+                      <div class="flex gap-2">
+                        <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
+                        <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
+                        <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {{-- Resultados --}}
+                <div class="card p-0 overflow-hidden res-panel">
+                  <div class="res-head">
+                    <div class="res-head__bg"></div>
+                    <div class="px-6 py-4 relative z-[1]">
+                      <h3 class="font-semibold text-white">Resultados estimados</h3>
+                      <p class="text-white/80 text-sm mt-1">Cálculo en tiempo real</p>
+                    </div>
+                  </div>
+
+                  <div class="p-6 grid grid-cols-2 gap-4">
+                    <div class="stat stat-line">
+                      <div class="stat-k">Ganancia por venta</div>
+                      <div id="calc-out-venta" class="stat-v">$0.00</div>
+                    </div>
+                    <div class="stat stat-line">
+                      <div class="stat-k">Comisión residual por activación</div>
+                      <div id="calc-out-residual" class="stat-v">$0.00</div>
+                    </div>
+                    <div class="stat stat-line">
+                      <div class="stat-k">Ganancia por recarga</div>
+                      <div id="calc-out-sipab" class="stat-v">$0.00</div>
+                    </div>
+
+                    <div class="col-span-2 stat-big glow">
+                      <div class="stat-k">Ingreso total estimado / mes</div>
+                      <div id="calc-out-total" class="stat-v-big">$0.00</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
 
     {{-- 4. Soporte / 7. Capacitación --}}
     <div id="soporte" class="grid lg:grid-cols-2 gap-6 scroll-mt-28">
@@ -594,9 +644,7 @@
         <button id="cartClose" class="cart-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>
       </header>
 
-      <div id="cartItems" class="cart-items">
-        <!-- items renderizados por JS -->
-      </div>
+      <div id="cartItems" class="cart-items"></div>
 
       <footer class="cart-footer">
         <div class="cart-total">
@@ -619,14 +667,15 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
     .brand{background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .brand-text{background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
     .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none }
 
     /* Pastillas de nav superior */
-    .top-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--bd);background:#fff;color:#0f172a;font-weight:700;white-space:nowrap}
+    .top-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--bd);background:#fff;color:#0f172a;font-weight:700;white-space:nowrap;transition:.2s}
     .top-pill:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(65,156,246,.10)}
     .is-disabled{pointer-events:none;opacity:.55;filter:grayscale(10%)}
 
-    /* KPI / botones */
+    /* Tarjetas base */
     .card{border:1px solid var(--bd);border-radius:1.2rem;background:#fff;box-shadow:0 10px 30px rgba(15,23,42,.06)}
     .ico{width:42px;height:42px;border-radius:.9rem;display:grid;place-items:center;color:#fff}
     .section-title{font-size:1.25rem;font-weight:800;color:#0f172a}
@@ -670,7 +719,7 @@
     .braulio-img{width:68px; height:68px; border-radius:9999px; object-fit:cover; background:#fff; border:6px solid rgba(255,255,255,.95); box-shadow:0 6px 14px rgba(2,6,23,.15); z-index:1}
     .braulio-badge{position:absolute; top:14px; right:14px; width:14px; height:14px; border-radius:9999px; background:#ef4444; border:2px solid #fff; box-shadow:0 0 0 2px rgba(168,85,247,.25)}
 
-    /* Estilos específicos de Paquetes (tabs/pricing) */
+    /* Paquetes (como ya tenías) */
     #paquetes .pk-tab{padding:.6rem 1rem;border-radius:9999px;border:1px solid rgba(15,23,42,.1);font-weight:600;background:#fff;color:#0f172a;transition:transform .2s, box-shadow .2s, border-color .2s, background .2s}
     #paquetes .pk-tab:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,23,42,.08)}
     #paquetes .pk-tab.is-active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#419cf6,#844ff0);box-shadow:0 10px 24px rgba(65,156,246,.18), 0 6px 16px rgba(132,79,240,.16)}
@@ -684,27 +733,83 @@
     #paquetes .pk-btn-cta{display:inline-flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-radius:9999px;font-weight:700;color:#fff;background-image:linear-gradient(135deg,#419cf6,#844ff0);box-shadow:0 10px 22px rgba(65,156,246,.18);transition:transform .25s, box-shadow .25s, filter .25s}
     #paquetes .pk-btn-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 34px rgba(65,156,246,.24);filter:brightness(1.03)}
     #paquetes .pk-btn-cta--glow{box-shadow:0 14px 28px rgba(132,79,240,.25),0 10px 22px rgba(65,156,246,.18)}
-  
 
-  /* Gestión + Calculadora helpers */
-.label{font-weight:600;color:#0f172a}
-.helper{font-size:.78rem;color:#64748b}
-.badge{font-size:.7rem;padding:.35rem .55rem;border-radius:999px;border:1px solid var(--bd);color:#475569;background:linear-gradient(135deg,rgba(65,156,246,.12),rgba(132,79,240,.12))}
-.pill{padding:.25rem .6rem;border-radius:9999px;border:1px solid var(--bd);background:#fff}
+    /* ======== REDISEÑO GESTIÓN ======== */
+    .card-gst{background:linear-gradient(180deg,#fff,#fff) padding-box,linear-gradient(135deg,rgba(65,156,246,.3),rgba(132,79,240,.3)) border-box;border:1px solid transparent}
+    .gst-head{position:relative}
+    .gst-head__bg{position:absolute;inset:0;background:radial-gradient(1200px 500px at -10% -20%, rgba(65,156,246,.25), transparent), radial-gradient(1200px 600px at 120% -10%, rgba(132,79,240,.25), transparent);filter:saturate(110%)}
+    .gst-head__inner{position:relative;z-index:1}
+    .gst-badge{display:inline-flex;align-items:center;gap:.4rem;margin-left:.5rem;padding:.28rem .6rem;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:700;font-size:.72rem}
 
-/* Slider y stats (calculadora) */
-.slider{-webkit-appearance:none;appearance:none;height:10px;border-radius:999px;background:linear-gradient(90deg,#e5e7eb,#e2e8f0);outline:none}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));box-shadow:0 6px 18px rgba(66,99,235,.25);border:2px solid white;cursor:pointer}
-.slider::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));border:2px solid white;cursor:pointer}
-.stat{border:1px solid var(--bd);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,#f8fafc,#fff)}
-.stat-k{font-size:.74rem;color:#6b7280}
-.stat-v{margin-top:.25rem;font-weight:800;font-size:1.45rem;color:#0f172a}
-.stat-big{border:1px solid var(--bd);border-radius:1rem;padding:1.2rem;background:#fff}
-.stat-v-big{margin-top:.25rem;font-weight:900;letter-spacing:-.02em;font-size:clamp(1.8rem,3.4vw,2.6rem);background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .ico-ghost{background:linear-gradient(135deg,rgba(65,156,246,.6),rgba(132,79,240,.6));backdrop-filter:blur(2px);border:1px solid rgba(255,255,255,.2)}
+    .stat-glass{border:1px solid rgba(255,255,255,.25);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08));backdrop-filter:blur(6px)}
+    .stat-glass .stat-k{font-size:.75rem;color:#e2e8f0}
+    .stat-glass .stat-v{margin-top:.2rem;font-weight:900;font-size:1.6rem}
 
-/* Tabla preview */
-#gestion table th,#gestion table td{white-space:nowrap}
+    /* Filtros sticky */
+    .gst-filters__inner{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;padding:.75rem;border:1px solid var(--bd);border-radius:14px;background:linear-gradient(180deg,#f8fafc,#fff);box-shadow:0 8px 20px rgba(15,23,42,.06)}
+    .inpt{height:38px;border-radius:.65rem;border:1px solid rgba(15,23,42,.12);padding:.45rem .65rem;outline:0;background:#fff;transition:border .2s, box-shadow .2s}
+    .inpt:focus{border-color:#a5b4fc;box-shadow:0 0 0 4px rgba(65,156,246,.12)}
+    .chip{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--bd);padding:.5rem .9rem;border-radius:9999px;background:#fff;font-weight:700;transition:transform .15s, box-shadow .2s}
+    .chip:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(15,23,42,.06)}
+    .chip-primary{background:linear-gradient(135deg,#419cf6,#844ff0);border-color:transparent;color:#fff}
+    .chip-white{background:#fff;border-color:rgba(255,255,255,.4)}
 
+    /* Action tiles en gestión */
+    .atile{position:relative;overflow:hidden}
+    .atile::after{content:"";position:absolute;inset:0;background:radial-gradient(400px 120px at 10% -20%, rgba(65,156,246,.12), transparent), radial-gradient(400px 120px at 110% 120%, rgba(132,79,240,.12), transparent);opacity:0;transition:opacity .25s}
+    .atile:hover::after{opacity:1}
+
+    /* Tabla Gestión */
+    .gst-table{border:1px solid var(--bd);border-radius:14px;overflow:hidden;background:#fff}
+    .gst-table thead{background:linear-gradient(135deg,rgba(65,156,246,.08),rgba(132,79,240,.08));backdrop-filter:blur(2px)}
+    .gst-table th,.gst-table td{padding:.75rem 1rem;white-space:nowrap}
+    .gst-table tbody tr{border-top:1px solid rgba(15,23,42,.08);transition:background .15s}
+    .gst-table tbody tr:hover{background:#f8fafc}
+    .gst-table .empty{padding:1.25rem;text-align:center;color:#64748b}
+
+    .pill{padding:.25rem .6rem;border-radius:9999px;border:1px solid var(--bd);background:#fff;font-weight:700;font-size:.78rem}
+    .pill-ok{border-color:rgba(16,185,129,.25);color:#065f46;background:linear-gradient(180deg, #ecfdf5, #ffffff)}
+    .pill-warn{border-color:rgba(245,158,11,.25);color:#7c2d12;background:linear-gradient(180deg, #fff7ed, #ffffff)}
+    .pill-muted{color:#475569}
+
+    /* ======== CALCULADORA REDISEÑO ======== */
+    .animate-in{animation:slideIn .22s ease-out}
+    @keyframes slideIn{from{transform:translateY(6px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .calc-wrap{border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(15,23,42,.6),rgba(15,23,42,.65)) padding-box,linear-gradient(135deg,rgba(65,156,246,.45),rgba(132,79,240,.45)) border-box;border:1px solid transparent;box-shadow:0 30px 60px rgba(2,6,23,.35)}
+    .glass{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px)}
+    .badge-ghost{font-size:.7rem;padding:.35rem .55rem;border-radius:999px;border:1px solid rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.08)}
+    .pill-dark{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#fff}
+
+    /* Chips (reutilizadas con efecto active) */
+    .chip.is-active{background:linear-gradient(135deg,#419cf6,#844ff0);border-color:transparent;color:#fff;box-shadow:0 10px 22px rgba(65,156,246,.18)}
+    .chip:active{transform:translateY(0)!important}
+
+    /* Slider y stats */
+    .slider{-webkit-appearance:none;appearance:none;height:10px;border-radius:999px;background:linear-gradient(90deg,#e5e7eb,#e2e8f0);outline:none}
+    .slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));box-shadow:0 6px 18px rgba(66,99,235,.25);border:2px solid white;cursor:pointer}
+    .slider::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));border:2px solid white;cursor:pointer}
+
+    .label{font-weight:700;color:#0f172a}
+    .helper{font-size:.78rem;color:#64748b}
+    .input-wrp{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.25);border-radius:.7rem;overflow:hidden}
+    .input-wrp .input-prefix,.input-wrp .input-suffix{padding:.45rem .6rem;color:#fff;background:rgba(255,255,255,.08)}
+    .input-number{border:none;outline:0}
+    .glass .input-number{background:transparent;color:#fff}
+    .glass .label{color:#fff}
+
+    .stat{border:1px solid var(--bd);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,#f8fafc,#fff)}
+    .stat-k{font-size:.74rem;color:#6b7280}
+    .stat-v{margin-top:.25rem;font-weight:800;font-size:1.45rem;color:#0f172a}
+    .stat-big{border:1px solid var(--bd);border-radius:1rem;padding:1.2rem;background:#fff}
+    .stat-v-big{margin-top:.25rem;font-weight:900;letter-spacing:-.02em;font-size:clamp(1.8rem,3.4vw,2.6rem);background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .res-panel{background:linear-gradient(180deg,#0b1220,#0f172a)}
+    .res-head{position:relative}
+    .res-head__bg{position:absolute;inset:0;background:radial-gradient(600px 240px at -10% -20%, rgba(65,156,246,.35), transparent), radial-gradient(600px 240px at 120% -10%, rgba(132,79,240,.32), transparent)}
+    .res-panel .stat,.res-panel .stat-big{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.18)}
+    .res-panel .stat-k{color:#cbd5e1}
+    .res-panel .stat-v{color:#fff}
+    .glow{box-shadow:0 15px 40px rgba(65,156,246,.18),0 10px 26px rgba(132,79,240,.16)}
   </style>
 
   {{-- ======= SCRIPTS ======= --}}
@@ -768,12 +873,10 @@
       function close(){ overlay.hidden=true; drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 
       function render(){
-        // badges
         const c = cart.count();
         if (badge)  badge.textContent  = c;
         if (badgeM) badgeM.textContent = c;
 
-        // list
         if (!itemsBox) return;
         if (cart.items.length===0){
           itemsBox.innerHTML = `<div class="text-center text-slate-500 py-10">Tu carrito está vacío.</div>`;
@@ -798,9 +901,7 @@
         if (totalEl) totalEl.textContent = money(cart.total());
       }
 
-      // events
       function wire(){
-        // open/close
         btn?.addEventListener('click', open);
         btnM?.addEventListener('click', open);
         closeBtn?.addEventListener('click', close);
@@ -808,7 +909,6 @@
 
         emptyBtn?.addEventListener('click', ()=>{ cart.empty(); });
 
-        // delegate items actions
         itemsBox?.addEventListener('click', (e)=>{
           const item = e.target.closest('.cart-item'); if(!item) return;
           const sku = item.dataset.sku;
@@ -817,7 +917,6 @@
           else if (e.target.closest('.ci-del')) { cart.remove(sku); }
         });
 
-        // checkout -> WhatsApp con resumen
         checkout?.addEventListener('click', ()=>{
           if (!cart.items.length) return;
           const lines = cart.items.map(i=>`• ${i.title} x${i.qty} = ${money(i.price*i.qty)}`).join('%0A');
@@ -827,7 +926,6 @@
           window.open(url, '_blank');
         });
 
-        // botones "Agregar al carrito" en toda la página (y en otras vistas si comparten layout)
         const hookAddButtons = () => {
           $$('.js-add-cart, .add-to-cart').forEach(btn=>{
             if (btn.dataset._bound) return;
@@ -843,13 +941,9 @@
           });
         };
         hookAddButtons();
-        // Si cargas productos dinámicos en tienda, re-ejecuta hookAddButtons() tras insertar el HTML.
       }
 
-      cart.load();
-      render();
-      wire();
-      // expositor mínimo para la tienda si lo necesitas
+      cart.load(); render(); wire();
       window.BM_CART = {
         add:(sku,title,price,qty)=>{ cart.add(sku,title,price,qty); },
         items:()=>JSON.parse(JSON.stringify(cart.items)),
@@ -857,121 +951,120 @@
       };
     })();
 
-    <script>
-  // === Modal open/close ===
-  (function(){
-    document.querySelectorAll('[data-open]').forEach(btn=>{
-      btn.addEventListener('click',()=> document.querySelector(btn.dataset.open)?.classList.remove('hidden'));
-    });
-    document.querySelectorAll('[data-close]').forEach(btn=>{
-      btn.addEventListener('click',()=> document.querySelector(btn.dataset.close)?.classList.add('hidden'));
-    });
-  })();
-
-  // === Calculadora (scoped al contenedor para no chocar) ===
-  (function(root){
-    const $  = (s, r=root) => r.querySelector(s);
-    const $$ = (s, r=root) => [...r.querySelectorAll(s)];
-    const fmt2 = n => (Number(n)||0).toLocaleString('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2,maximumFractionDigits:2});
-
-    if (!root) return;
-
-    const PLANS = {
-      basico:   { ganancia: 50, residual4: 3.96, sugMonto: 99 },
-      ideal:    { ganancia: 85, residual4: 7.97, sugMonto: 199 },
-      poderoso: { ganancia: 95, residual4: 8.76, sugMonto: 239 }
-    };
-
-    const el = {
-      sims:     $('#calc-in-sims'),
-      recargas: $('#calc-in-recargas'),
-      doble:    $('#calc-in-doble'),
-      porta:    $('#calc-in-porta'),
-      monto:    $('#calc-in-monto'),
-
-      outSims: $('#calc-out-sims'),
-      outGanPlan: $('#calc-out-gan-plan'),
-      outResidualBadge: $('#calc-out-residual-badge'),
-      outVenta: $('#calc-out-venta'),
-      outSipab: $('#calc-out-sipab'),
-      outResidual: $('#calc-out-residual'),
-      outTotal: $('#calc-out-total'),
-
-      chips: $$('.chip', root)
-    };
-
-    let state = {
-      plan: 'basico',
-      sims: +el.sims.value || 0,
-      porta: +el.porta.value || 0,
-      recargas: +el.recargas?.value || 0,
-      doble: false,
-      monto: +el.monto.value || PLANS.basico.sugMonto
-    };
-
-    function residualUnit(){ const base = PLANS[state.plan].residual4; return state.doble ? base * 2 : base; }
-    const totalRecargas = () => Math.max(0, +state.recargas || 0);
-
-    function calc(){
-      const gAct = PLANS[state.plan].ganancia;
-      const venta = (state.sims || 0) * (gAct + (state.porta || 0));
-      const residual = (state.sims > 0) ? state.sims * residualUnit() : 0;
-      const sipab = totalRecargas() * (state.monto || 0) * 0.08;
-      return { venta, residual, sipab, total: venta + residual + sipab };
-    }
-
-    function reflectChips(){
-      $$('.chip[data-bind]').forEach(ch=>{
-        const bind = ch.dataset.bind, v = ch.dataset.value;
-        let cur = '';
-        if(bind==='plan') cur = state.plan;
-        if(bind==='sims') cur = String(state.sims);
-        if(bind==='porta') cur = String(state.porta);
-        if(bind==='recargas') cur = String(state.recargas);
-        if(bind==='monto') cur = String(state.monto);
-        ch.classList.toggle('is-active', cur === v);
+    // === Modal open/close ===
+    (function(){
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click',()=> document.querySelector(btn.dataset.open)?.classList.remove('hidden'));
       });
-    }
-
-    function suggestMontoPorPlan(){ state.monto = PLANS[state.plan].sugMonto; el.monto.value = state.monto; }
-
-    function render(){
-      el.outSims.textContent = state.sims; el.sims.value = state.sims;
-      el.porta.value = state.porta; el.recargas && (el.recargas.value = state.recargas); el.monto.value = state.monto;
-      el.outResidualBadge.textContent = state.doble ? '8%' : '4%';
-      el.outGanPlan.textContent = fmt2(PLANS[state.plan].ganancia);
-      const r = calc();
-      el.outVenta.textContent    = fmt2(r.venta);
-      el.outResidual.textContent = fmt2(r.residual);
-      el.outSipab.textContent    = fmt2(r.sipab);
-      el.outTotal.textContent    = fmt2(r.total);
-      reflectChips();
-    }
-
-    el.chips.forEach(ch=>{
-      ch.addEventListener('click', ()=>{
-        const bind = ch.dataset.bind, val = ch.dataset.value;
-        if(bind==='plan'){ state.plan = val; suggestMontoPorPlan(); }
-        if(bind==='sims') state.sims = +val;
-        if(bind==='porta') state.porta = +val;
-        if(bind==='recargas') state.recargas = +val;
-        if(bind==='monto') state.monto = +val;
-        render();
+      document.querySelectorAll('[data-close]').forEach(btn=>{
+        btn.addEventListener('click',()=> document.querySelector(btn.dataset.close)?.classList.add('hidden'));
       });
-    });
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape'){
+          document.querySelectorAll('[id^="modal-"]').forEach(m=> m.classList.add('hidden'));
+        }
+      });
+    })();
 
-    ['input','change'].forEach(evt=>{
-      el.sims.addEventListener(evt, e=>{ state.sims = Math.max(0, +e.target.value||0); render(); });
-      el.porta.addEventListener(evt, e=>{ state.porta = +e.target.value||0; render(); });
-      el.recargas && el.recargas.addEventListener(evt, e=>{ state.recargas = +e.target.value||0; render(); });
-      el.doble.addEventListener(evt, e=>{ state.doble = !!e.target.checked; render(); });
-      el.monto.addEventListener(evt, e=>{ state.monto = +e.target.value||0; render(); });
-    });
+    // === Calculadora (scoped) ===
+    (function(root){
+      const $  = (s, r=root) => r.querySelector(s);
+      const $$ = (s, r=root) => [...r.querySelectorAll(s)];
+      const fmt2 = n => (Number(n)||0).toLocaleString('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2,maximumFractionDigits:2});
+      if (!root) return;
 
-    suggestMontoPorPlan(); render();
-  })(document.getElementById('calc-ganancias'));
-</script>
+      const PLANS = {
+        basico:   { ganancia: 50, residual4: 3.96, sugMonto: 99 },
+        ideal:    { ganancia: 85, residual4: 7.97, sugMonto: 199 },
+        poderoso: { ganancia: 95, residual4: 8.76, sugMonto: 239 }
+      };
 
+      const el = {
+        sims:     $('#calc-in-sims'),
+        recargas: $('#calc-in-recargas'),
+        doble:    $('#calc-in-doble'),
+        porta:    $('#calc-in-porta'),
+        monto:    $('#calc-in-monto'),
+
+        outSims: $('#calc-out-sims'),
+        outGanPlan: $('#calc-out-gan-plan'),
+        outResidualBadge: $('#calc-out-residual-badge'),
+        outVenta: $('#calc-out-venta'),
+        outSipab: $('#calc-out-sipab'),
+        outResidual: $('#calc-out-residual'),
+        outTotal: $('#calc-out-total'),
+
+        chips: $$('.chip', root)
+      };
+
+      let state = {
+        plan: 'basico',
+        sims: +el.sims.value || 0,
+        porta: +el.porta.value || 0,
+        recargas: +el.recargas?.value || 0,
+        doble: false,
+        monto: +el.monto.value || PLANS.basico.sugMonto
+      };
+
+      const residualUnit = () => (state.doble ? PLANS[state.plan].residual4 * 2 : PLANS[state.plan].residual4);
+      const totalRecargas = () => Math.max(0, +state.recargas || 0);
+
+      function calc(){
+        const gAct = PLANS[state.plan].ganancia;
+        const venta = (state.sims || 0) * (gAct + (state.porta || 0));
+        const residual = (state.sims > 0) ? state.sims * residualUnit() : 0;
+        const sipab = totalRecargas() * (state.monto || 0) * 0.08;
+        return { venta, residual, sipab, total: venta + residual + sipab };
+      }
+
+      function reflectChips(){
+        $$('.chip[data-bind]').forEach(ch=>{
+          const bind = ch.dataset.bind, v = ch.dataset.value;
+          let cur = '';
+          if(bind==='plan') cur = state.plan;
+          if(bind==='sims') cur = String(state.sims);
+          if(bind==='porta') cur = String(state.porta);
+          if(bind==='recargas') cur = String(state.recargas);
+          if(bind==='monto') cur = String(state.monto);
+          ch.classList.toggle('is-active', cur === v);
+        });
+      }
+
+      function render(){
+        el.outSims.textContent = state.sims; el.sims.value = state.sims;
+        el.porta.value = state.porta; el.recargas && (el.recargas.value = state.recargas); el.monto.value = state.monto;
+        el.outResidualBadge.textContent = state.doble ? '8%' : '4%';
+        el.outGanPlan.textContent = fmt2(PLANS[state.plan].ganancia);
+        const r = calc();
+        el.outVenta.textContent    = fmt2(r.venta);
+        el.outResidual.textContent = fmt2(r.residual);
+        el.outSipab.textContent    = fmt2(r.sipab);
+        el.outTotal.textContent    = fmt2(r.total);
+        reflectChips();
+      }
+
+      el.chips.forEach(ch=>{
+        ch.addEventListener('click', ()=>{
+          const bind = ch.dataset.bind, val = ch.dataset.value;
+          if(bind==='plan'){ state.plan = val; state.monto = PLANS[state.plan].sugMonto; el.monto.value = state.monto; }
+          if(bind==='sims') state.sims = +val;
+          if(bind==='porta') state.porta = +val;
+          if(bind==='recargas') state.recargas = +val;
+          if(bind==='monto') state.monto = +val;
+          render();
+        });
+      });
+
+      ['input','change'].forEach(evt=>{
+        el.sims.addEventListener(evt, e=>{ state.sims = Math.max(0, +e.target.value||0); render(); });
+        el.porta.addEventListener(evt, e=>{ state.porta = +e.target.value||0; render(); });
+        el.recargas && el.recargas.addEventListener(evt, e=>{ state.recargas = +e.target.value||0; render(); });
+        el.doble.addEventListener(evt, e=>{ state.doble = !!e.target.checked; render(); });
+        el.monto.addEventListener(evt, e=>{ state.monto = +e.target.value||0; render(); });
+      });
+
+      render();
+    })(document.getElementById('calc-ganancias'));
   </script>
 
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
