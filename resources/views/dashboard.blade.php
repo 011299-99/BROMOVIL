@@ -304,18 +304,214 @@
     </div>
 
     {{-- 3. Gestión del negocio --}}
-    <div id="ganancias" class="card p-6 scroll-mt-28">
-      <div class="flex items-center gap-3">
-        <div class="ico bg-grad-green"><i class="fas fa-chart-line"></i></div>
-        <h3 class="section-title">Gestión del negocio</h3>
+<section id="gestion" class="card p-6 scroll-mt-28">
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="ico bg-grad-green"><i class="fas fa-chart-line"></i></div>
+    <h3 class="section-title">Gestión del negocio</h3>
+
+    {{-- Filtros / Exportaciones --}}
+    <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET" class="ml-auto flex flex-wrap items-end gap-3">
+      <div>
+        <label class="label text-xs block mb-1">Desde</label>
+        <input type="date" name="from" value="{{ request('from') }}" class="input-number w-40">
       </div>
-      <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <a href="#" class="action-tile is-disabled" title="Próximamente"><div class="tt">Comisiones</div><div class="ds">Historial y estado</div></a>
-        <a href="#" class="action-tile is-disabled" title="Próximamente"><div class="tt">Calculadora</div><div class="ds">Estimador de residuales</div></a>
-        <a href="#" class="action-tile is-disabled" title="Próximamente"><div class="tt">Mis líneas</div><div class="ds">Activas / preactivadas</div></a>
-        <a href="#" class="action-tile is-disabled" title="Próximamente"><div class="tt">Reportes</div><div class="ds">Excel / PDF</div></a>
+      <div>
+        <label class="label text-xs block mb-1">Hasta</label>
+        <input type="date" name="to" value="{{ request('to') }}" class="input-number w-40">
+      </div>
+      <button class="chip" type="submit">Aplicar</button>
+
+      {{-- Exportar Excel/PDF conservando filtros --}}
+      <a class="chip" href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+        <i class="fas fa-file-excel mr-1"></i> Excel
+      </a>
+      <a class="chip" target="_blank" href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+        <i class="fas fa-file-pdf mr-1"></i> PDF
+      </a>
+    </form>
+  </div>
+
+  {{-- Acciones --}}
+  <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <a href="{{ $r('comisiones.index') }}" class="action-tile">
+      <div class="tt">Comisiones</div>
+      <div class="ds">Historial y estado</div>
+    </a>
+
+    <button type="button" class="action-tile" data-open="#modal-calc">
+      <div class="tt">Calculadora</div>
+      <div class="ds">Estimador de residuales</div>
+    </button>
+
+    <a href="{{ $r('lineas.index') }}" class="action-tile">
+      <div class="tt">Mis líneas</div>
+      <div class="ds">Activas / preactivadas</div>
+    </a>
+
+    <a href="{{ $r('reports.index') }}" class="action-tile">
+      <div class="tt">Reportes</div>
+      <div class="ds">Excel / PDF</div>
+    </a>
+  </div>
+
+  {{-- Preview de últimos movimientos (opcional: conecta a tu backend) --}}
+  @php
+    // Si no pasas datos desde el controlador, puedes simular algunos para que se vea presentable
+    $preview = $preview ?? collect([
+      (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
+      (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
+      (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
+    ]);
+  @endphp
+
+  <div class="mt-6">
+    <div class="flex items-center justify-between">
+      <h4 class="font-semibold text-slate-900">Resumen rápido</h4>
+      <a href="{{ $r('comisiones.index') }}" class="text-sm text-blue-600 hover:underline">Ver todo →</a>
+    </div>
+
+    <div class="mt-3 overflow-x-auto">
+      <table class="min-w-full text-sm border border-slate-200 rounded-xl overflow-hidden">
+        <thead class="bg-slate-50 text-slate-600">
+          <tr>
+            <th class="px-4 py-2 text-left">Fecha</th>
+            <th class="px-4 py-2 text-left">Concepto</th>
+            <th class="px-4 py-2 text-left">Plan</th>
+            <th class="px-4 py-2 text-right">Monto</th>
+            <th class="px-4 py-2 text-right">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($preview as $m)
+            <tr class="border-t">
+              <td class="px-4 py-2">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
+              <td class="px-4 py-2">{{ $m->concepto }}</td>
+              <td class="px-4 py-2">{{ $m->plan }}</td>
+              <td class="px-4 py-2 text-right">${{ number_format($m->monto,2) }}</td>
+              <td class="px-4 py-2 text-right"><span class="pill">{{ ucfirst($m->estado) }}</span></td>
+            </tr>
+          @empty
+            <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td></tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{{-- Modal Calculadora --}}
+<div id="modal-calc" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/50" data-close="#modal-calc"></div>
+  <div class="absolute inset-x-0 top-10 mx-auto max-w-5xl px-6">
+    <div class="card p-0 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b">
+        <h3 class="font-semibold text-slate-900">Calcula tu potencial de ganancias</h3>
+        <button class="chip" data-close="#modal-calc">Cerrar</button>
+      </div>
+      <div class="p-6">
+        {{-- === Calculadora (IDs con prefijo calc-) === --}}
+        <section id="calc-ganancias" class="bg-[radial-gradient(ellipse_at_top,_#f8faff_0%,_#ffffff_60%)]">
+          <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6">
+            <div class="card p-6">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-slate-900">Simulación</h3>
+                <span class="badge">Ganancias aproximadas</span>
+              </div>
+
+              <div id="calc-plan-wrap" class="mt-6 field">
+                <label class="label">Plan</label>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
+                  <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
+                  <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
+                </div>
+                <p class="helper mt-2">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
+              </div>
+
+              <div class="mt-6 field">
+                <label class="label">SIMs vendidas / mes</label>
+                <div class="mt-2 flex flex-wrap items-center gap-2">
+                  <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
+                  <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
+                  <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
+                  <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
+                  <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
+                  <span class="ml-auto text-xs text-slate-500">Valor actual: <b id="calc-out-sims">0</b></span>
+                </div>
+                <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
+              </div>
+
+              <div id="calc-porta-section" class="mt-6 field">
+                <label class="label">Bono por portabilidad (por activación)</label>
+                <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
+                  <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
+                  <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
+                  <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
+                  <div class="input-wrp money">
+                    <span class="input-prefix">$</span>
+                    <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24">
+                    <span class="input-suffix">MXN</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 field">
+                <label class="label">Comisión residual</label>
+                <div class="mt-2 flex flex-wrap items-center gap-3">
+                  <span class="pill" id="calc-out-residual-badge">4%</span>
+                  <label class="flex items-center gap-2 text-sm select-none">
+                    <input id="calc-in-doble" type="checkbox" class="toggle">
+                    <span>Activaste + de 30 líneas (duplica a 8%)</span>
+                  </label>
+                </div>
+                <p class="helper mt-2">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
+
+                <div class="mt-4">
+                  <label class="label">Recargas <u>totales</u> del mes</label>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
+                    <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
+                    <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24">
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 field">
+                <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
+                  <span class="helper">Monto por recarga</span>
+                  <div class="input-wrp money">
+                    <span class="input-prefix">$</span>
+                    <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28">
+                    <span class="input-suffix">MXN</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
+                    <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
+                    <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-6 lg:sticky lg:top-6 h-fit">
+              <h3 class="font-semibold text-slate-900">Resultados estimados</h3>
+              <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="stat"><div class="stat-k">Ganancia por venta</div><div id="calc-out-venta" class="stat-v">$0.00</div></div>
+                <div class="stat"><div class="stat-k">Comisión residual por activación</div><div id="calc-out-residual" class="stat-v">$0.00</div></div>
+                <div class="stat"><div class="stat-k">Ganancia por recarga</div><div id="calc-out-sipab" class="stat-v">$0.00</div></div>
+                <div class="col-span-2 stat-big">
+                  <div class="stat-k">Ingreso total estimado / mes</div>
+                  <div id="calc-out-total" class="stat-v-big">$0.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {{-- === /Calculadora --}}
       </div>
     </div>
+  </div>
+</div>
+
 
     {{-- 4. Soporte / 7. Capacitación --}}
     <div id="soporte" class="grid lg:grid-cols-2 gap-6 scroll-mt-28">
@@ -488,6 +684,27 @@
     #paquetes .pk-btn-cta{display:inline-flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-radius:9999px;font-weight:700;color:#fff;background-image:linear-gradient(135deg,#419cf6,#844ff0);box-shadow:0 10px 22px rgba(65,156,246,.18);transition:transform .25s, box-shadow .25s, filter .25s}
     #paquetes .pk-btn-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 34px rgba(65,156,246,.24);filter:brightness(1.03)}
     #paquetes .pk-btn-cta--glow{box-shadow:0 14px 28px rgba(132,79,240,.25),0 10px 22px rgba(65,156,246,.18)}
+  
+
+  /* Gestión + Calculadora helpers */
+.label{font-weight:600;color:#0f172a}
+.helper{font-size:.78rem;color:#64748b}
+.badge{font-size:.7rem;padding:.35rem .55rem;border-radius:999px;border:1px solid var(--bd);color:#475569;background:linear-gradient(135deg,rgba(65,156,246,.12),rgba(132,79,240,.12))}
+.pill{padding:.25rem .6rem;border-radius:9999px;border:1px solid var(--bd);background:#fff}
+
+/* Slider y stats (calculadora) */
+.slider{-webkit-appearance:none;appearance:none;height:10px;border-radius:999px;background:linear-gradient(90deg,#e5e7eb,#e2e8f0);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));box-shadow:0 6px 18px rgba(66,99,235,.25);border:2px solid white;cursor:pointer}
+.slider::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:linear-gradient(135deg,var(--b1),var(--b2));border:2px solid white;cursor:pointer}
+.stat{border:1px solid var(--bd);border-radius:1rem;padding:1rem;background:linear-gradient(180deg,#f8fafc,#fff)}
+.stat-k{font-size:.74rem;color:#6b7280}
+.stat-v{margin-top:.25rem;font-weight:800;font-size:1.45rem;color:#0f172a}
+.stat-big{border:1px solid var(--bd);border-radius:1rem;padding:1.2rem;background:#fff}
+.stat-v-big{margin-top:.25rem;font-weight:900;letter-spacing:-.02em;font-size:clamp(1.8rem,3.4vw,2.6rem);background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Tabla preview */
+#gestion table th,#gestion table td{white-space:nowrap}
+
   </style>
 
   {{-- ======= SCRIPTS ======= --}}
@@ -639,6 +856,122 @@
         total:()=>cart.total()
       };
     })();
+
+    <script>
+  // === Modal open/close ===
+  (function(){
+    document.querySelectorAll('[data-open]').forEach(btn=>{
+      btn.addEventListener('click',()=> document.querySelector(btn.dataset.open)?.classList.remove('hidden'));
+    });
+    document.querySelectorAll('[data-close]').forEach(btn=>{
+      btn.addEventListener('click',()=> document.querySelector(btn.dataset.close)?.classList.add('hidden'));
+    });
+  })();
+
+  // === Calculadora (scoped al contenedor para no chocar) ===
+  (function(root){
+    const $  = (s, r=root) => r.querySelector(s);
+    const $$ = (s, r=root) => [...r.querySelectorAll(s)];
+    const fmt2 = n => (Number(n)||0).toLocaleString('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2,maximumFractionDigits:2});
+
+    if (!root) return;
+
+    const PLANS = {
+      basico:   { ganancia: 50, residual4: 3.96, sugMonto: 99 },
+      ideal:    { ganancia: 85, residual4: 7.97, sugMonto: 199 },
+      poderoso: { ganancia: 95, residual4: 8.76, sugMonto: 239 }
+    };
+
+    const el = {
+      sims:     $('#calc-in-sims'),
+      recargas: $('#calc-in-recargas'),
+      doble:    $('#calc-in-doble'),
+      porta:    $('#calc-in-porta'),
+      monto:    $('#calc-in-monto'),
+
+      outSims: $('#calc-out-sims'),
+      outGanPlan: $('#calc-out-gan-plan'),
+      outResidualBadge: $('#calc-out-residual-badge'),
+      outVenta: $('#calc-out-venta'),
+      outSipab: $('#calc-out-sipab'),
+      outResidual: $('#calc-out-residual'),
+      outTotal: $('#calc-out-total'),
+
+      chips: $$('.chip', root)
+    };
+
+    let state = {
+      plan: 'basico',
+      sims: +el.sims.value || 0,
+      porta: +el.porta.value || 0,
+      recargas: +el.recargas?.value || 0,
+      doble: false,
+      monto: +el.monto.value || PLANS.basico.sugMonto
+    };
+
+    function residualUnit(){ const base = PLANS[state.plan].residual4; return state.doble ? base * 2 : base; }
+    const totalRecargas = () => Math.max(0, +state.recargas || 0);
+
+    function calc(){
+      const gAct = PLANS[state.plan].ganancia;
+      const venta = (state.sims || 0) * (gAct + (state.porta || 0));
+      const residual = (state.sims > 0) ? state.sims * residualUnit() : 0;
+      const sipab = totalRecargas() * (state.monto || 0) * 0.08;
+      return { venta, residual, sipab, total: venta + residual + sipab };
+    }
+
+    function reflectChips(){
+      $$('.chip[data-bind]').forEach(ch=>{
+        const bind = ch.dataset.bind, v = ch.dataset.value;
+        let cur = '';
+        if(bind==='plan') cur = state.plan;
+        if(bind==='sims') cur = String(state.sims);
+        if(bind==='porta') cur = String(state.porta);
+        if(bind==='recargas') cur = String(state.recargas);
+        if(bind==='monto') cur = String(state.monto);
+        ch.classList.toggle('is-active', cur === v);
+      });
+    }
+
+    function suggestMontoPorPlan(){ state.monto = PLANS[state.plan].sugMonto; el.monto.value = state.monto; }
+
+    function render(){
+      el.outSims.textContent = state.sims; el.sims.value = state.sims;
+      el.porta.value = state.porta; el.recargas && (el.recargas.value = state.recargas); el.monto.value = state.monto;
+      el.outResidualBadge.textContent = state.doble ? '8%' : '4%';
+      el.outGanPlan.textContent = fmt2(PLANS[state.plan].ganancia);
+      const r = calc();
+      el.outVenta.textContent    = fmt2(r.venta);
+      el.outResidual.textContent = fmt2(r.residual);
+      el.outSipab.textContent    = fmt2(r.sipab);
+      el.outTotal.textContent    = fmt2(r.total);
+      reflectChips();
+    }
+
+    el.chips.forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        const bind = ch.dataset.bind, val = ch.dataset.value;
+        if(bind==='plan'){ state.plan = val; suggestMontoPorPlan(); }
+        if(bind==='sims') state.sims = +val;
+        if(bind==='porta') state.porta = +val;
+        if(bind==='recargas') state.recargas = +val;
+        if(bind==='monto') state.monto = +val;
+        render();
+      });
+    });
+
+    ['input','change'].forEach(evt=>{
+      el.sims.addEventListener(evt, e=>{ state.sims = Math.max(0, +e.target.value||0); render(); });
+      el.porta.addEventListener(evt, e=>{ state.porta = +e.target.value||0; render(); });
+      el.recargas && el.recargas.addEventListener(evt, e=>{ state.recargas = +e.target.value||0; render(); });
+      el.doble.addEventListener(evt, e=>{ state.doble = !!e.target.checked; render(); });
+      el.monto.addEventListener(evt, e=>{ state.monto = +e.target.value||0; render(); });
+    });
+
+    suggestMontoPorPlan(); render();
+  })(document.getElementById('calc-ganancias'));
+</script>
+
   </script>
 
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
