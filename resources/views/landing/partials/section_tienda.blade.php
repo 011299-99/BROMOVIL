@@ -1,4 +1,10 @@
 {{-- ================= SECCIÓN: TIENDA DISTRIBUIDORES ================= --}}
+@php
+  use Illuminate\Support\Facades\Route;
+  // Destino del botón "Comprar" (usa la ruta 'cart' si existe; si no, /carrito)
+  $toCart = Route::has('cart') ? route('cart') : url('/carrito');
+@endphp
+
 <section id="tienda" class="py-20 bg-slate-50">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center">
@@ -47,9 +53,9 @@
           <h3 class="text-base md:text-lg font-semibold text-slate-900">{{ $p['name'] }}</h3>
           <p class="mt-1 text-sm text-slate-600">Branding oficial para reforzar tu presencia y confianza.</p>
 
-          <div class="mt-4 flex items-center justify-between">
-            <a href="{{ route('store') }}"
-               class="btn-cta-store">
+           <div class="mt-4 flex items-center justify-between">
+            {{-- Al hacer clic te lleva al carrito --}}
+            <a href="{{ $toCart }}" class="btn-cta-store">
               Comprar
               <svg class="ml-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -90,25 +96,17 @@
   }
   .store-card:hover .store-card__border{ opacity:.5; filter: blur(14px); }
 
-/* Imagen con zoom suave  */
-.store-img{
-  width: 100%;
-  object-fit: contain;      /* <<< antes: cover. Ahora muestra la imagen completa */
-  object-position: center;
-  display: block;
-  background: #f8fafc;      /* fondo claro para imágenes con transparencia/bordes */
-  padding: 6px;         
-  transition: transform .5s ease, filter .35s ease;
-}
-
-
-/* Al hover mantenemos un “zoom” leve sin cortar la imagen */
-.store-card:hover .store-img{
-  transform: scale(1.02);  
-  filter: contrast(1.02);
-}
-
-  
+  /* Imagen con zoom suave  */
+  .store-img{
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    background: #f8fafc;
+    padding: 6px;
+    transition: transform .5s ease, filter .35s ease;
+  }
+  .store-card:hover .store-img{ transform: scale(1.02); filter: contrast(1.02) }
   .store-card:hover .store-img{ transform: scale(1.06); filter: contrast(1.02) }
 
   /* Badge */
@@ -131,9 +129,6 @@
   .btn-cta-store:hover{ transform: translateY(-2px) scale(1.02); box-shadow:0 16px 34px rgba(65,156,246,.24); filter: brightness(1.03) }
 
   /* ===== Tipografía igual a Bromovil ===== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-section#tienda {
-  font-family: 'Poppins', sans-serif;
-}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  section#tienda { font-family: 'Poppins', sans-serif; }
 </style>

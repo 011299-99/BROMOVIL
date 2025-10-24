@@ -22,6 +22,10 @@ Route::post('/distribuidor/aplicar', [DistributorController::class, 'apply'])
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+// Página del carrito
+Route::view('/carrito', 'landing.partials.cart')->name('cart');
+
+
 
 // Rutas protegidas (perfil + cambio de contraseña)
 Route::middleware('auth')->group(function () {
