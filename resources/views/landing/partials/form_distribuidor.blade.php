@@ -70,10 +70,18 @@
             @error('phone') <p class="form-error">{{ $message }}</p> @enderror
           </div>
 
+          {{-- Contraseña --}}
           <div class="sm:col-span-2">
             <label class="form-label" for="password">Contraseña *</label>
             <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
             @error('password') <p class="form-error">{{ $message }}</p> @enderror
+          </div>
+
+          {{-- Confirmar contraseña (nuevo) --}}
+          <div class="sm:col-span-2">
+            <label class="form-label" for="password_confirmation">Confirmar contraseña *</label>
+            <input class="form-input" type="password" id="password_confirmation" name="password_confirmation" placeholder="Repite tu contraseña" required autocomplete="new-password">
+            @error('password_confirmation') <p class="form-error">{{ $message }}</p> @enderror
           </div>
 
           {{-- Honeypot antispam (opcional, no se guarda en BD) --}}
