@@ -18,15 +18,14 @@
     {{-- Acordeón --}}
     <div class="mt-10 space-y-4" x-data="{ open: null }">
       @php
-        $faqs = [
-          ['¿Necesito un RFC para ser distribuidor?', 'Respuesta detallada sobre requisitos fiscales y alternativas.'],
-          ['¿Cómo funcionan las comisiones residuales?', 'Explicación clara de residuales y periodicidad.'],
-          ['¿Puedo cambiar de esquema de negocio?', 'Proceso y condiciones para cambiar de kit/esquema.'],
-          ['¿Hay soporte técnico para mis clientes?', 'Tipo de soporte disponible y horarios.'],
-          ['¿Cómo se realiza la facturación?', 'Información fiscal y comprobación de pagos.'],
-          ['¿Qué pasa si mis clientes quieren portar su número?', 'Proceso de portabilidad paso a paso.'],
-        ];
-      @endphp
+  $faqs = [
+    ['¿Puedo facturar mis compras?', 'Sí, puedes facturar todas tus compras.'],
+    ['¿Qué tanta escalabilidad tiene el negocio?', 'Gran escalabilidad: puedes crear tu propia red de subdistribuidores.'],
+    ['¿Puedo cambiar de esquema cuando lo necesite?', 'Sí, incluso puedes manejar más de dos esquemas activos al mismo tiempo.'],
+    ['¿Qué hay del soporte técnico?', 'Disponible de 7 a.m. a 11 p.m., lunes a domingo, todo el año.'],
+    ['¿Necesito RFC?', 'No, puedes trabajar sin RFC y facturar si lo deseas.'],
+  ];
+@endphp
 
       @foreach($faqs as $i => [$q,$a])
       <div class="group rounded-xl border bg-white shadow-sm hover:shadow-md transition overflow-hidden">
