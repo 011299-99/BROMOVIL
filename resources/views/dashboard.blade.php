@@ -1,13 +1,39 @@
 <x-app-layout>
   @php
-    // Helpers seguros
+    /** @var \App\Models\User $user */
+    /** @var \App\Models\Distributor|null $dist */
+    /** @var array $stats */
+    /** @var \Illuminate\Support\Collection $preview */
+
+    // Origen de datos: si el controlador ya los manda, se respetan; si no, tomamos de auth()
+    $user    = $user    ?? auth()->user();
+    $dist    = $dist    ?? optional($user)->distributor;
+
+    // Nombre para mostrar: display_name -> name (first+last) -> email
+    $displayName = $dist?->display_name ?: ($user?->name ?: $user?->email);
+
+    // WhatsApp dinámico (fallback al que ya tenías)
+    $waNumber = $dist?->whatsapp ?: '525568278695'; // SIN '+'
+    $waMsg    = rawurlencode('Hola '.$displayName.', ¿en qué podemos apoyarte?');
+
+    // KPIs (si no vienen del controlador)
+    $stats = $stats ?? [
+      'active_lines'     => (int)($dist->active_lines     ?? 0),
+      'month_commission' => (int)($dist->month_commission ?? 0),
+      'sipab_balance'    => (int)($dist->sipab_balance    ?? 0),
+    ];
+
+    // Preview por defecto (si no viene del controlador)
+    $preview = $preview ?? collect([
+      (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
+      (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
+      (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
+    ]);
+
+    // Helper de rutas seguro
     $r = function (string $name, string $fallback = '#') {
       return \Illuminate\Support\Facades\Route::has($name) ? route($name) : $fallback;
     };
-
-    // WhatsApp centralizado
-    $waNumber = '525568278695'; // SIN "+"
-    $waMsg    = rawurlencode('Hola Somos el Soporte de Bromovil.');
   @endphp
 
   {{-- ======= HEADER / NAV SUPERIOR ======= --}}
@@ -63,16 +89,20 @@
       <div class="grid md:grid-cols-2 gap-10 items-center">
         <div>
           <h1 class="mt-2 text-4xl md:text-6xl font-extrabold leading-tight text-white">
-            Bienvenido Bro<span class="brand">motor</span>
+            Bienvenido, <span class="brand">{{ $displayName }}</span>
           </h1>
           <p class="mt-3 text-slate-100/90 md:text-lg">Accesos rápidos para activar, portar, recargar y comprar SIMs.</p>
         </div>
 
+        {{-- KPIs DINÁMICOS --}}
         <div class="rounded-2xl border border-white/15 bg-white/10 p-5 text-white backdrop-blur">
           <div class="grid grid-cols-3 gap-4">
-            <div class="kpi"><div class="kpi-k">Líneas activas</div><div class="kpi-v">12</div></div>
-            <div class="kpi"><div class="kpi-k">Ganancia mes</div><div class="kpi-v">$4,820</div></div>
-            <div class="kpi"><div class="kpi-k">Saldo SIPAB</div><div class="kpi-v">$1,250</div></div>
+            <div class="kpi"><div class="kpi-k">Líneas activas</div>
+                 <div class="kpi-v">{{ number_format($stats['active_lines']) }}</div></div>
+            <div class="kpi"><div class="kpi-k">Ganancia mes</div>
+                 <div class="kpi-v">${{ number_format($stats['month_commission']) }}</div></div>
+            <div class="kpi"><div class="kpi-k">Saldo SIPAB</div>
+                 <div class="kpi-v">${{ number_format($stats['sipab_balance']) }}</div></div>
           </div>
 
           <div class="mt-5 grid grid-cols-2 gap-3">
@@ -319,15 +349,15 @@
           <div class="mt-5 grid sm:grid-cols-3 gap-3">
             <div class="stat-glass">
               <div class="stat-k">Comisiones del mes</div>
-              <div class="stat-v brand-text">$8,420</div>
+              <div class="stat-v brand-text">${{ number_format($stats['month_commission']) }}</div>
             </div>
             <div class="stat-glass">
               <div class="stat-k">Líneas activadas</div>
-              <div class="stat-v text-white">37</div>
+              <div class="stat-v text-white">{{ number_format($stats['active_lines']) }}</div>
             </div>
             <div class="stat-glass">
-              <div class="stat-k">Recargas procesadas</div>
-              <div class="stat-v text-white">182</div>
+              <div class="stat-k">Saldo SIPAB</div>
+              <div class="stat-v text-white">${{ number_format($stats['sipab_balance']) }}</div>
             </div>
           </div>
         </div>
@@ -564,25 +594,6 @@
     </div>
 
     {{-- 4. Soporte / 7. Capacitación --}}
-    <div id="soporte" class="grid lg:grid-cols-2 gap-6 scroll-mt-28">
-      <div class="card p-6">
-        <div class="flex items-center gap-3">
-          <div class="ico bg-grad-rose"><i class="fas fa-headset"></i></div>
-          <h3 class="section-title">Soporte inmediato</h3>
-        </div>
-        <p class="mt-2 text-slate-600">Atención de 7 a.m. a 11 p.m., todos los días.</p>
-
-        <div class="mt-4 flex flex-wrap gap-2">
-          <a href="https://wa.me/{{ $waNumber }}?text={{ $waMsg }}"
-             target="_blank" rel="noopener noreferrer"
-             class="btn-primary">
-            <i class="fab fa-whatsapp"></i> WhatsApp
-          </a>
-          <a href="#" class="btn-soft is-disabled" title="Próximamente"><i class="fas fa-comments"></i> Chat en vivo</a>
-          <a href="{{ $r('faq') }}" class="btn-soft"><i class="fas fa-question-circle"></i> FAQ</a>
-        </div>
-      </div>
-
       <div class="card p-6">
         <div class="flex items-center gap-3">
           <div class="ico bg-grad-purple"><i class="fas fa-graduation-cap"></i></div>
@@ -595,36 +606,6 @@
         </div>
       </div>
     </div>
-
-    {{-- 5. Cobertura / Marketplace --}}
-    <div id="cobertura" class="grid lg:grid-cols-2 gap-6 scroll-mt-28">
-      <div class="card p-6">
-        <div class="flex items-center gap-3">
-          <div class="ico bg-grad-prim"><i class="fas fa-map-marked-alt"></i></div>
-          <h3 class="section-title">Mapa de cobertura</h3>
-        </div>
-        <p class="mt-2 text-slate-600">México, EE.UU. y Canadá. Ubica distribuidores cercanos.</p>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <a href="{{ $r('map') }}" class="btn-primary"><i class="fas fa-map"></i> Abrir mapa</a>
-          <a href="#" class="btn-soft is-disabled" title="Próximamente"><i class="fas fa-location-arrow"></i> Usar mi ubicación</a>
-        </div>
-      </div>
-
-      <div class="card p-6">
-        <div class="flex items-center gap-3">
-          <div class="ico bg-grad-amber"><i class="fas fa-store"></i></div>
-          <h3 class="section-title">Marketplace de distribuidores</h3>
-        </div>
-        <p class="mt-2 text-slate-600">Material POP y merchandising con saldo o pago tradicional.</p>
-        <div class="mt-4 grid sm:grid-cols-2 gap-3">
-          <a href="{{ $r('store') }}" class="item-pop"><i class="fas fa-flag"></i> Lonas y posters</a>
-          <a href="{{ $r('store') }}" class="item-pop"><i class="fas fa-tshirt"></i> Playeras / gorras</a>
-          <a href="{{ $r('store') }}" class="item-pop"><i class="fas fa-store-alt"></i> Módulos / stands</a>
-          <a href="{{ $r('store') }}" class="item-pop"><i class="fas fa-ad"></i> Flyers / stickers</a>
-        </div>
-      </div>
-    </div>
-
   </section>
 
   {{-- ======= FLOTANTE BRAULIO ======= --}}
@@ -882,15 +863,15 @@
           itemsBox.innerHTML = `<div class="text-center text-slate-500 py-10">Tu carrito está vacío.</div>`;
         }else{
           itemsBox.innerHTML = cart.items.map(it => `
-            <div class="cart-item" data-sku="${it.sku}">
+            <div class="cart-item" data-sku="\${it.sku}">
               <div>
-                <div class="ci-title">${it.title}</div>
-                <div class="ci-price">${money(it.price)} · <span class="text-slate-500">x${it.qty}</span></div>
+                <div class="ci-title">\${it.title}</div>
+                <div class="ci-price">\${money(it.price)} · <span class="text-slate-500">x\${it.qty}</span></div>
               </div>
               <div class="flex items-center gap-2">
                 <div class="ci-qty">
                   <button class="ci-dec" aria-label="Disminuir">−</button>
-                  <span>${it.qty}</span>
+                  <span>\${it.qty}</span>
                   <button class="ci-inc" aria-label="Aumentar">+</button>
                 </div>
                 <button class="ci-del" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
@@ -919,10 +900,10 @@
 
         checkout?.addEventListener('click', ()=>{
           if (!cart.items.length) return;
-          const lines = cart.items.map(i=>`• ${i.title} x${i.qty} = ${money(i.price*i.qty)}`).join('%0A');
+          const lines = cart.items.map(i=>`• \${i.title} x\${i.qty} = \${money(i.price*i.qty)}`).join('%0A');
           const total = money(cart.total());
-          const msg = `Hola, quiero comprar:%0A${lines}%0A--------------------%0ATotal: ${total}`;
-          const url = `https://wa.me/${waNumber}?text=${msg}`;
+          const msg = `Hola, quiero comprar:%0A\${lines}%0A--------------------%0ATotal: \${total}`;
+          const url = `https://wa.me/\${waNumber}?text=\${msg}`;
           window.open(url, '_blank');
         });
 

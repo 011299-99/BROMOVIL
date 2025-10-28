@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,9 +11,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Campos asignables en masa.
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -21,35 +19,36 @@ class User extends Authenticatable
         'password',
     ];
 
-    /**
-     * Ocultos en serialización.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Casts.
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Hash automático al crear/actualizar
+            'password' => 'hashed',
         ];
     }
 
-    /**
-     * Accessor para $user->name (compatibilidad con vistas/partials antiguos).
-     */
+  
     public function getNameAttribute(): string
     {
         return trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
     }
 
-    /**
-     * Incluir "name" también en toArray()/JSON.
-     */
-    protected $appends = ['name'];
+   
+    public function distributor()
+    {
+        return $this->hasOne(\App\Models\Distributor::class);
+    }
+
+ 
+    public function getDisplayNameAttribute(): string
+    {
+        return optional($this->distributor)->display_name ?: $this->name;
+    }
+
+      protected $appends = ['name', 'display_name'];
 }

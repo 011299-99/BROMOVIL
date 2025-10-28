@@ -14,7 +14,8 @@
   <div class="mx-auto max-w-7xl px-6">
     <div class="flex items-center justify-between gap-4">
       <a href="{{ route('home') }}" class="flex items-center gap-3">
-        <img src="{{ asset('storage/img/logo.png') }}" class="h-7 w-auto" alt="Bromovil"><span class="text-lg md:text-xl font-semibold text-slate-800">Carrito de compras</span>
+        <img src="{{ asset('storage/img/logo.png') }}" class="h-7 w-auto" alt="Bromovil">
+        <span class="text-lg md:text-xl font-semibold text-slate-800">Carrito de compras</span>
       </a>
       <div class="hidden md:flex items-center gap-2">
         <a href="{{ route('home') }}#tienda" class="top-pill">Seguir comprando</a>
@@ -34,12 +35,12 @@
 <section class="bg-white/60">
   <div class="mx-auto max-w-7xl px-6 pt-6">
     <div class="relative">
-      <div id="prog" class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 rounded-full bg-slate-200"></div>
+      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1 rounded-full bg-slate-200"></div>
       <div id="progBar" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 rounded-full bg-gradient-to-r from-[#419cf6] to-[#844ff0] w-1/3 transition-all"></div>
       <div class="grid grid-cols-3 gap-6 relative">
-        <button class="step is-active" data-step="1"><span>Confirma tu orden</span><em>Revisa tus productos</em></button>
-        <button class="step" data-step="2" disabled><span>Ingresa tus datos</span><em>Envío y contacto</em></button>
-        <button class="step" data-step="3" disabled><span>Método de pago</span><em>Finaliza tu compra</em></button>
+        <button class="step is-active" data-step="1"><span>Confirma tu orden</span>
+        <button class="step" data-step="2" disabled><span>Ingresa tus datos</span>
+        <button class="step" data-step="3" disabled><span>Método de pago</span>
       </div>
     </div>
   </div>
@@ -47,7 +48,6 @@
 
 <section id="checkout" class="relative py-10 bg-slate-50">
   <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-6">
-
     <div class="lg:col-span-8 space-y-6">
       {{-- PASO 1 --}}
       <div class="panel" data-panel="1">
@@ -64,7 +64,7 @@
           <div id="cart-list" class="divide-y divide-slate-100"></div>
           <div id="cart-empty" class="hidden p-10 text-center">
             <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#419cf6] to-[#844ff0] text-white shadow-md">
-              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.33 5.32A2 2 0 0 0 7.62 21h8.76a2 2 0 0 0 1.95-1.68L19 13M7 13l1.5-6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l1.5-6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
             </div>
             <h3 class="mt-3 text-lg font-semibold text-slate-900">Tu carrito está vacío</h3>
             <p class="text-slate-600 text-sm mt-1">Explora la tienda para agregar productos.</p>
@@ -83,35 +83,64 @@
           </div>
 
           <fieldset id="fs-data" class="p-6 grid gap-6 relative" disabled>
-            <div class="grid sm:grid-cols-2 gap-4">
-              <div><label class="form-label">Nombre *</label><input class="form-input" id="f_name" placeholder="Tu nombre" required></div>
-              <div><label class="form-label">Apellido *</label><input class="form-input" id="f_last" placeholder="Tu apellido" required></div>
-              <div><label class="form-label">Correo electrónico *</label><input class="form-input" id="f_email" type="email" placeholder="tunombre@correo.com" required></div>
-              <div><label class="form-label">Teléfono *</label><input class="form-input" id="f_phone" type="tel" inputmode="tel" placeholder="55 1234 5678" required></div>
+            {{-- CONTACTO --}}
+            <div class="rounded-xl border border-slate-200 p-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-slate-900">Datos de contacto</h3>
+                <span id="badge-contact" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">Paso 1/2</span>
+              </div>
+              <div class="mt-4 grid sm:grid-cols-2 gap-4">
+                <div><label class="form-label">Nombre *</label><input class="form-input req" id="f_name" placeholder="Jetzael" required></div>
+                <div><label class="form-label">Apellido *</label><input class="form-input req" id="f_last" placeholder="Quevedo" required></div>
+                <div><label class="form-label">Correo *</label><input class="form-input req" id="f_email" type="email" placeholder="jetzaelramirez@gmail.com" required></div>
+                <div><label class="form-label">Teléfono *</label><input class="form-input req" id="f_phone" type="tel" placeholder="55 1222 5678" required></div>
+              </div>
             </div>
 
-            <div>
-              <label class="form-label">Buscar dirección</label>
-              <input id="f_search" class="form-input" placeholder="Ej. Calle, número y colonia">
-              <p class="mt-2 text-xs text-slate-500">Usa la búsqueda y luego ajusta cada campo si es necesario.</p>
-            </div>
+            {{-- DIRECCIÓN (se habilita cuando contacto está OK) --}}
+            <div id="addr-card" class="relative rounded-xl border border-slate-200">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-[#419cf6] to-[#844ff0] text-white text-xs">📍</span>
+                  <h3 class="font-semibold text-slate-900">Dirección de envío</h3>
+                </div>
+                <span id="badge-addr" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">Bloqueado</span>
+              </div>
 
-            <div class="grid sm:grid-cols-2 gap-4">
-              <div class="sm:col-span-2"><label class="form-label">Calle</label><input id="f_street" class="form-input" placeholder="Ej. Av. Juárez, Calle Hidalgo"></div>
-              <div><label class="form-label">Número</label><input id="f_number" class="form-input" placeholder="Ej. 105, 245B, S/N"></div>
-              <div><label class="form-label">Interior</label><input id="f_int" class="form-input" placeholder="Ej. Depto. 3B, Interior 1"></div>
-              <div><label class="form-label">Código postal *</label><input id="f_zip" class="form-input" placeholder="Ej. 06700" required></div>
-              <div><label class="form-label">Municipio / Alcaldía</label><input id="f_city" class="form-input" placeholder="Ej. Benito Juárez, Zapopan"></div>
-              <div><label class="form-label">Estado</label><input id="f_state" class="form-input" placeholder="Ej. Jalisco, CDMX"></div>
-              <div><label class="form-label">Colonia</label><input id="f_col" class="form-input" placeholder="Ej. Col. Del Valle"></div>
-              <div class="sm:col-span-2"><label class="form-label">Referencias</label><input id="f_refs" class="form-input" placeholder="Ej. Casa con portón rojo, frente a Oxxo"></div>
-              <div><label class="form-label">Entre calle 1</label><input id="f_between1" class="form-input" placeholder="Ej. Av. Reforma"></div>
-              <div><label class="form-label">Entre calle 2</label><input id="f_between2" class="form-input" placeholder="Ej. Calle Morelos"></div>
+              <div id="addr-wrap" class="p-4 grid gap-4 data-[locked=true]:pointer-events-none data-[locked=true]:opacity-60 data-[locked=true]:select-none" data-locked="true">
+                <div>
+                  <label class="form-label">Buscar dirección</label>
+                  <input id="f_search" class="form-input" placeholder="Ej. Calle, número y colonia">
+                  <p class="mt-2 text-xs text-slate-500">Usa la búsqueda y luego ajusta cada campo si es necesario.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div class="sm:col-span-2"><label class="form-label">Calle</label><input id="f_street" class="form-input" placeholder="Av. Juárez / Calle Hidalgo"></div>
+                  <div><label class="form-label">Número</label><input id="f_number" class="form-input" placeholder="105, 245B, S/N"></div>
+                  <div><label class="form-label">Interior</label><input id="f_int" class="form-input" placeholder="Depto. 3B, Interior 1"></div>
+                  <div><label class="form-label">Código postal *</label><input id="f_zip" class="form-input req" placeholder="06700" maxlength="5" required><p class="mt-1 text-xs text-slate-500">5 dígitos (México).</p></div>
+                  <div><label class="form-label">Municipio / Alcaldía</label><input id="f_city" class="form-input" placeholder="Benito Juárez / Zapopan"></div>
+                  <div><label class="form-label">Estado</label><input id="f_state" class="form-input" placeholder="CDMX, Jalisco"></div>
+                  <div><label class="form-label">Colonia</label><input id="f_col" class="form-input" placeholder="Col. Del Valle"></div>
+                  <div class="sm:col-span-2"><label class="form-label">Referencias</label><input id="f_refs" class="form-input" placeholder="Casa con portón rojo, frente a Oxxo"></div>
+                  <div><label class="form-label">Entre calle 1</label><input id="f_between1" class="form-input" placeholder="Av. Reforma"></div>
+                  <div><label class="form-label">Entre calle 2</label><input id="f_between2" class="form-input" placeholder="Calle Morelos"></div>
+                </div>
+              </div>
+
+              <div id="addr-overlay" class="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-white/60 to-white/30 border border-transparent hidden">
+                <div class="absolute inset-0 grid place-items-center">
+                  <div class="inline-flex items-center gap-2 text-slate-600 text-sm bg-white/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17a2 2 0 1 0 0-4"/><path d="M7 11V7a5 5 0 1 1 10 0v4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+                    Completa tus datos de contacto
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="flex flex-wrap justify-between gap-3 pt-2">
-              <button class="btn-soft" id="back-1" type="button">Regresar</button>
-              <button class="btn-primary" id="to-step-3" type="button">Continuar al pago</button>
+              <button class="btn-soft" id="back-1" type="button" disabled>Regresar</button>
+              <button class="btn-primary" id="to-step-3" type="button" disabled>Continuar al pago</button>
             </div>
           </fieldset>
 
@@ -187,33 +216,168 @@
 @endif
 
 <style>
-:root{--b1:#419cf6;--b2:#844ff0;--ink:#0f172a;--bd:rgba(15,23,42,.12)}
+:root{--b1:#419cf6;--b2:#844ff0;--bd:rgba(15,23,42,.12)}
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-section#checkout,footer{font-family:'Poppins',sans-serif}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-.top-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--bd);background:#fff;color:#0f172a;font-weight:700;white-space:nowrap}.top-pill:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(65,156,246,.10)}
-.step{position:relative;text-align:left;border:1px solid var(--bd);border-radius:14px;background:#fff;padding:.9rem 1rem;transition:.2s}.step span{display:block;font-weight:800;color:#0f172a}.step em{display:block;font-size:.8rem;color:#64748b}.step[disabled]{opacity:.55;cursor:not-allowed}.step.is-active{background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--b1),var(--b2)) border-box;border-color:transparent;box-shadow:0 10px 24px rgba(65,156,246,.18),0 6px 16px rgba(132,79,240,.16)}.step.is-active span{background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.78rem 1.15rem;border-radius:.9rem;color:#fff;font-weight:800;background:linear-gradient(135deg,var(--b1),var(--b2));box-shadow:0 12px 26px rgba(65,156,246,.20),0 8px 20px rgba(132,79,240,.18);transition:.2s}.btn-primary:hover{transform:translateY(-1px)}
-.btn-soft{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.05rem;border-radius:.9rem;color:#0f172a;font-weight:700;background:#fff;border:1px solid var(--bd);transition:.2s}.btn-soft:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(15,23,42,.06)}
-.cart-item{display:grid;grid-template-columns:92px 1fr auto;gap:14px;padding:16px}.cart-thumb{width:92px;height:92px;border-radius:.9rem;object-fit:cover;background:#f8fafc;border:1px solid var(--bd)}.cart-title{font-weight:700;color:#0f172a}.cart-meta{font-size:.85rem;color:#64748b}.cart-price{font-weight:800;color:#0f172a}.qty{display:inline-flex;align-items:center;border:1px solid var(--bd);border-radius:.8rem;overflow:hidden;background:#fff}.qty button{width:36px;height:36px;display:grid;place-items:center;font-weight:800}.qty input{width:48px;text-align:center;border-left:1px solid var(--bd);border-right:1px solid var(--bd);padding:.35rem 0}@media (max-width:640px){.cart-item{grid-template-columns:72px 1fr}.cart-thumb{width:72px;height:72px}}
-.form-label{display:block;margin-bottom:.35rem;font-size:.85rem;font-weight:600;color:#0f172a}.form-input{width:100%;border-radius:.75rem;border:1px solid rgba(15,23,42,.12);background:#fff;padding:.65rem .9rem;font-size:.95rem;color:#0f172a;transition:box-shadow .2s,border-color .2s,transform .05s}.form-input:focus{outline:none;border-color:rgba(65,156,246,.55);box-shadow:0 0 0 4px rgba(65,156,246,.15)}
-fieldset[disabled]{opacity:.65;filter:grayscale(8%);pointer-events:none;user-select:none}fieldset:not([disabled]) + #lock-2{display:none}
+section#checkout,footer{font-family:'Poppins',sans-serif}
+.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+.top-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--bd);background:#fff;font-weight:700}
+.step{border:1px solid var(--bd);border-radius:14px;background:#fff;padding:.9rem 1rem}.step span{font-weight:800}.step[disabled]{opacity:.55}.step.is-active{background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--b1),var(--b2)) border-box;border-color:transparent;box-shadow:0 10px 24px rgba(65,156,246,.18),0 6px 16px rgba(132,79,240,.16)}.step.is-active span{background:linear-gradient(135deg,var(--b1),var(--b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn-primary,.btn-soft{display:inline-flex;align-items:center;gap:.5rem;border-radius:.9rem;font-weight:800}
+.btn-primary{padding:.78rem 1.15rem;color:#fff;background:linear-gradient(135deg,var(--b1),var(--b2));box-shadow:0 12px 26px rgba(65,156,246,.20),0 8px 20px rgba(132,79,240,.18)}
+.btn-soft{padding:.72rem 1.05rem;background:#fff;border:1px solid var(--bd)}
+.cart-item{display:grid;grid-template-columns:92px 1fr auto;gap:14px;padding:16px}.cart-thumb{width:92px;height:92px;border-radius:.9rem;object-fit:cover;background:#f8fafc;border:1px solid var(--bd)}
+.form-label{display:block;margin-bottom:.35rem;font-size:.85rem;font-weight:600}.form-input{width:100%;border-radius:.75rem;border:1px solid rgba(15,23,42,.12);background:#fff;padding:.65rem .9rem;font-size:.95rem}
+fieldset[disabled]{opacity:.65;filter:grayscale(8%);pointer-events:none}fieldset:not([disabled]) + #lock-2{display:none}
+.is-valid{border-color:rgba(16,185,129,.6)!important;box-shadow:0 0 0 4px rgba(16,185,129,.12)!important}
+.is-invalid{border-color:rgba(244,63,94,.6)!important;box-shadow:0 0 0 4px rgba(244,63,94,.12)!important}
+.btn-primary[disabled],.btn-soft[disabled]{opacity:.6;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+#addr-wrap[data-locked="true"] + #addr-overlay{display:block}
 </style>
 
 <script>
-(()=>{const CART='bm_cart_v1',CHK='bm_checkout_v1',$=s=>document.querySelector(s),$$=(s,c=document)=>[...c.querySelectorAll(s)],money=n=>{try{return(+n).toLocaleString('es-MX',{style:'currency',currency:'MXN'})}catch{return'$'+(+n).toFixed(2)}},get=key=>{try{return JSON.parse(localStorage.getItem(key)|| (key===CART?'[]':'{}'))}catch{return key===CART?[]:{}}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const list=$('#cart-list'),empty=$('#cart-empty'),sumD=$('#sum-details'),sumS=$('#sum-subtotal'),sumT=$('#sum-total'),fs=$('#fs-data'),progBar=$('#progBar');
-let maxStep=1;const setStep=n=>{n=+n;$$('.panel').forEach(p=>p.classList.toggle('hidden',+p.dataset.panel!==n));$$('.step').forEach(s=>{const i=+s.dataset.step;s.classList.toggle('is-active',i===n);s.toggleAttribute('disabled',i>maxStep)});progBar.style.width= (n===1?'33.333%':n===2?'66.666%':'100%');scrollTo({top:0,behavior:'smooth'})};
-const renderSummary=()=>{const items=get(CART);sumD.innerHTML=items.map(i=>`<div class="flex justify-between"><span>${i.title} × ${i.qty}</span><span>${money(i.price*i.qty)}</span></div>`).join('')||'<p class="text-slate-500">Sin productos.</p>';const sub=items.reduce((a,b)=>a+(+b.price||0)*(+b.qty||1),0);sumS.textContent=money(sub);sumT.textContent=money(sub)};
-const renderCart=()=>{const items=get(CART);list.innerHTML='';if(!items.length){empty.classList.remove('hidden');renderSummary();return}empty.classList.add('hidden');items.forEach((it,i)=>{const row=document.createElement('div');row.className='cart-item';row.dataset.index=i;row.innerHTML=`<img class="cart-thumb" src="${it.img||''}" alt="${it.title||'Producto'}" onerror="this.src='https://via.placeholder.com/180x180?text=${encodeURIComponent(it.title||'Producto')}'" /><div class="min-w-0"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><h4 class="cart-title truncate">${it.title||'Producto'}</h4><p class="cart-meta mt-1">SKU: ${it.sku||'-'}</p></div><button type="button" class="text-rose-600 font-semibold hover:underline js-remove">Eliminar</button></div><div class="mt-3 flex items-center justify-between gap-3"><div class="qty" role="group" aria-label="Cantidad"><button type="button" class="js-minus" aria-label="Disminuir">−</button><input type="number" class="js-qty" min="1" value="${it.qty||1}" /><button type="button" class="js-plus" aria-label="Aumentar">+</button></div><div class="cart-price">${money((+it.price||0)*(+it.qty||1))}</div></div></div><div class="hidden sm:block w-0"></div>`;list.appendChild(row)});renderSummary()};
-list.addEventListener('click',e=>{const r=e.target.closest('.cart-item');if(!r)return;let items=get(CART),i=+r.dataset.index;if(e.target.classList.contains('js-remove')){items.splice(i,1)}if(e.target.classList.contains('js-minus')){items[i].qty=Math.max(1,(+items[i].qty||1)-1)}if(e.target.classList.contains('js-plus')){items[i].qty=(+items[i].qty||1)+1}set(CART,items);renderCart()});list.addEventListener('change',e=>{if(!e.target.classList.contains('js-qty'))return;let items=get(CART),idx=+e.target.closest('.cart-item').dataset.index;items[idx].qty=Math.max(1,+e.target.value||1);set(CART,items);renderCart()});
-const clear=()=>{localStorage.setItem(CART,'[]');renderCart()};$('#btn-clear')?.addEventListener('click',clear);$('#btn-clear-m')?.addEventListener('click',clear);
-$$('.step').forEach(b=>b.addEventListener('click',()=>{const n=+b.dataset.step;if(n<=maxStep)setStep(n)}));
-$('#to-step-2')?.addEventListener('click',()=>{if(!get(CART).length)return alert('Tu carrito está vacío.');maxStep=Math.max(maxStep,2);fs.disabled=false;setStep(2)});$('#lock-2-go')?.addEventListener('click',()=>setStep(1));$('#back-1')?.addEventListener('click',()=>setStep(1));
-const fields=['f_name','f_last','f_email','f_phone','f_search','f_street','f_number','f_int','f_zip','f_city','f_state','f_col','f_refs','f_between1','f_between2'],collect=()=>{const d={};fields.forEach(id=>d[id]=($('#'+id)?.value||'').trim());set(CHK,d)},populate=()=>{const d=get(CHK);fields.forEach(id=>{const el=$('#'+id);if(el&&d[id])el.value=d[id]})};fields.forEach(id=>$('#'+id)?.addEventListener('input',collect));
-$('#to-step-3')?.addEventListener('click',()=>{for(const id of ['f_name','f_last','f_email','f_phone','f_zip']){const el=$('#'+id);if(!el?.value.trim())return el.focus(),el.reportValidity?.(),alert('Completa los campos obligatorios.')}collect();maxStep=Math.max(maxStep,3);setStep(3)});
-$('#back-2')?.addEventListener('click',()=>setStep(2));
-$('#btn-checkout')?.addEventListener('click',()=>{const items=get(CART);if(!items.length)return alert('Tu carrito está vacío.');const d=get(CHK),lines=items.map(it=>`• ${it.title} x${it.qty} — ${money(it.price)} c/u = ${money(it.price*it.qty)}`),tot=items.reduce((a,b)=>a+(b.price*b.qty),0),datos=[`Nombre: ${d.f_name||''} ${d.f_last||''}`,`Correo: ${d.f_email||''}`,`Teléfono: ${d.f_phone||''}`,`CP: ${d.f_zip||''}`,`Calle/Número: ${d.f_street||''} ${d.f_number||''} ${d.f_int?('('+d.f_int+')'):''}`,`Colonia/Municipio/Estado: ${d.f_col||''}, ${d.f_city||''}, ${d.f_state||''}`,`Entre calles: ${d.f_between1||''} y ${d.f_between2||''}`,`Referencias: ${d.f_refs||''}`].join('%0A');const msg=`Hola, quiero finalizar mi compra:%0A%0A${lines.join('%0A')}%0A%0ATotal: ${money(tot)}%0A%0A— Datos de envío —%0A${datos}%0A%0A¿Me apoyan con el proceso?`;open(`https://wa.me/{{ $waNumber }}?text=${msg}`,'_blank')});
-renderCart();renderSummary();populate();setStep(1);
+(()=>{
+  // ====== Helpers compactos ======
+  const CART='bm_cart_v1', CHK='bm_checkout_v1',
+    $=s=>document.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)],
+    money=n=>{try{return(+n).toLocaleString('es-MX',{style:'currency',currency:'MXN'})}catch{return'$'+(+n).toFixed(2)}},
+    get=k=>{try{return JSON.parse(localStorage.getItem(k)||(k===CART?'[]':'{}'))}catch{return k===CART?[]:{}}},
+    set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+  // ====== Reset de datos (form) en cada visita ======
+  localStorage.removeItem(CHK); // <-- limpia datos de contacto/dirección siempre
+  const clearForm = () => $$('#fs-data input').forEach(i=>i.value='');
+
+  const list=$('#cart-list'), empty=$('#cart-empty'), sumD=$('#sum-details'),
+        sumS=$('#sum-subtotal'), sumT=$('#sum-total'),
+        fs=$('#fs-data'), progBar=$('#progBar'),
+        addrWrap=$('#addr-wrap'), badgeContact=$('#badge-contact'), badgeAddr=$('#badge-addr');
+
+  let maxStep=1;
+
+  const setStep=n=>{
+    $$('.panel').forEach(p=>p.classList.toggle('hidden',+p.dataset.panel!==n));
+    $$('.step').forEach(s=>{const i=+s.dataset.step; s.classList.toggle('is-active',i===n); s.toggleAttribute('disabled',i>maxStep);});
+    progBar.style.width=(n===1?'33.333%':n===2?'66.666%':'100%');
+    scrollTo({top:0,behavior:'smooth'});
+  };
+
+  // ====== Carrito ======
+  const renderSummary=()=>{
+    const items=get(CART);
+    sumD.innerHTML=items.map(i=>`<div class="flex justify-between"><span>${i.title} × ${i.qty}</span><span>${money(i.price*i.qty)}</span></div>`).join('')||'<p class="text-slate-500">Sin productos.</p>';
+    const sub=items.reduce((a,b)=>a+(+b.price||0)*(+b.qty||1),0); sumS.textContent=money(sub); sumT.textContent=money(sub);
+  };
+  const renderCart=()=>{
+    const items=get(CART); list.innerHTML='';
+    if(!items.length){ empty.classList.remove('hidden'); renderSummary(); return }
+    empty.classList.add('hidden');
+    items.forEach((it,i)=>{
+      const row=document.createElement('div'); row.className='cart-item'; row.dataset.index=i;
+      row.innerHTML=`<img class="cart-thumb" src="${it.img||''}" alt="${it.title||'Producto'}" onerror="this.src='https://via.placeholder.com/180x180?text=${encodeURIComponent(it.title||'Producto')}'" />
+      <div class="min-w-0">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0"><h4 class="font-semibold truncate">${it.title||'Producto'}</h4><p class="text-sm text-slate-500 mt-1">SKU: ${it.sku||'-'}</p></div>
+          <button type="button" class="text-rose-600 font-semibold hover:underline js-remove">Eliminar</button>
+        </div>
+        <div class="mt-3 flex items-center justify-between gap-3">
+          <div class="qty"><button type="button" class="js-minus">−</button><input type="number" class="js-qty" min="1" value="${it.qty||1}" /><button type="button" class="js-plus">+</button></div>
+          <div class="font-extrabold">${money((+it.price||0)*(+it.qty||1))}</div>
+        </div>
+      </div><div class="hidden sm:block w-0"></div>`;
+      list.appendChild(row);
+    }); renderSummary();
+  };
+  list.addEventListener('click',e=>{
+    const r=e.target.closest('.cart-item'); if(!r) return; let items=get(CART), i=+r.dataset.index;
+    if(e.target.classList.contains('js-remove')) items.splice(i,1);
+    if(e.target.classList.contains('js-minus')) items[i].qty=Math.max(1,(+items[i].qty||1)-1);
+    if(e.target.classList.contains('js-plus')) items[i].qty=(+items[i].qty||1)+1;
+    set(CART,items); renderCart();
+  });
+  list.addEventListener('change',e=>{
+    if(!e.target.classList.contains('js-qty')) return; let items=get(CART), idx=+e.target.closest('.cart-item').dataset.index;
+    items[idx].qty=Math.max(1,+e.target.value||1); set(CART,items); renderCart();
+  });
+  const clearCart=()=>{ localStorage.setItem(CART,'[]'); renderCart() };
+  $('#btn-clear')?.addEventListener('click',clearCart); $('#btn-clear-m')?.addEventListener('click',clearCart);
+
+  // ====== Paso 2: validación compacta ======
+  const F=['f_name','f_last','f_email','f_phone','f_search','f_street','f_number','f_int','f_zip','f_city','f_state','f_col','f_refs','f_between1','f_between2'];
+  const REQ_CONTACT=['f_name','f_last','f_email','f_phone'], REQ_ADDR=['f_zip'];
+  const $I=id=>document.getElementById(id);
+
+  const fmtPhone=v=>v.replace(/[^\d]/g,'').replace(/^(\d{2})(\d{4})(\d{0,4}).*$/,(_,a,b,c)=>c?`${a} ${b} ${c}`:b?`${a} ${b}`:a);
+  const isEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), isZip=v=>/^\d{5}$/.test(v);
+  const mark=(el,ok)=>{el.classList.toggle('is-valid',ok&&el.value.trim()); el.classList.toggle('is-invalid',!ok&&el.value.trim())};
+
+  const save=()=>{ const d={}; F.forEach(id=>d[id]=($I(id)?.value||'').trim()); set(CHK,d) }; // por si quieres volver a activar persistencia
+  const load=()=>{ const d=get(CHK); F.forEach(id=>{ const el=$I(id); if(el && d[id]) el.value=d[id] }) };
+
+  const validate=()=>{
+    let okC=true, okA=true, typed=false;
+    REQ_CONTACT.forEach(id=>{
+      const el=$I(id); if(!el) return;
+      if(id==='f_phone') el.value=fmtPhone(el.value);
+      const v=el.value.trim(); if(v) typed=true;
+      const ok=(id==='f_email')?isEmail(v):(id==='f_phone')?(v.replace(/\s/g,'').length>=10):(v.length>1);
+      mark(el,ok); if(!ok) okC=false;
+    });
+    // Gate dirección
+    addrWrap.dataset.locked = String(!okC);
+    badgeContact.textContent = okC?'Completado':'Paso 1/2';
+    badgeContact.className = 'text-xs px-2.5 py-1 rounded-full '+(okC?'bg-emerald-50 text-emerald-700 border border-emerald-200':'bg-slate-100 text-slate-700 border border-slate-200');
+    badgeAddr.textContent = okC?'Paso 2/2':'Bloqueado';
+    badgeAddr.className   = 'text-xs px-2.5 py-1 rounded-full '+(okC?'bg-blue-50 text-blue-700 border border-blue-200':'bg-slate-100 text-slate-700 border border-slate-200');
+
+    const zip=$I('f_zip'); if(zip){ const ok=isZip(zip.value.trim()); mark(zip,ok); if(!ok) okA=false; }
+    $('#to-step-3')?.toggleAttribute('disabled', !(okC&&okA));
+    $('#back-1')?.toggleAttribute('disabled', !typed);
+  };
+
+  // Delegación de eventos para inputs (menos listeners)
+  $('#fs-data')?.addEventListener('input',e=>{
+    const t=e.target;
+    if(!(t instanceof HTMLInputElement)) return;
+    if(t.id==='f_phone') t.value=fmtPhone(t.value);
+    // save();  // desactivado porque ahora reseteamos en cada visita
+    validate();
+  });
+
+  const enterStep2=()=>{ clearForm(); // limpia cualquier rastro al entrar
+    // load(); // desactivado (no cargamos nada para este flujo)
+    validate();
+  };
+
+  // ====== Navegación ======
+  $$('.step').forEach(b=>b.addEventListener('click',()=>{const n=+b.dataset.step; if(n<=maxStep) setStep(n)}));
+  $('#to-step-2')?.addEventListener('click',()=>{ if(!get(CART).length) return alert('Tu carrito está vacío.'); maxStep=Math.max(maxStep,2); fs.disabled=false; setStep(2); enterStep2(); });
+  $('#lock-2-go')?.addEventListener('click',()=>setStep(1));
+  $('#back-1')?.addEventListener('click',()=>setStep(1));
+  $('#to-step-3')?.addEventListener('click',()=>{ validate(); if($('#to-step-3')?.disabled) return alert('Completa tus datos y el código postal.'); maxStep=Math.max(maxStep,3); setStep(3); });
+  $('#back-2')?.addEventListener('click',()=>setStep(2));
+
+  // ====== Checkout WhatsApp ======
+  $('#btn-checkout')?.addEventListener('click',()=>{
+    const items=get(CART); if(!items.length) return alert('Tu carrito está vacío.');
+    const d=get(CHK)||{}; // si quisieras enviar los datos, re-activa save()
+    const lines=items.map(it=>`• ${it.title} x${it.qty} — ${money(it.price)} c/u = ${money(it.price*it.qty)}`);
+    const tot=items.reduce((a,b)=>a+(b.price*b.qty),0);
+    const datos=[
+      `Nombre: ${$I('f_name')?.value||''} ${$I('f_last')?.value||''}`,
+      `Correo: ${$I('f_email')?.value||''}`,
+      `Teléfono: ${$I('f_phone')?.value||''}`,
+      `CP: ${$I('f_zip')?.value||''}`,
+      `Calle/Número: ${$I('f_street')?.value||''} ${$I('f_number')?.value||''} ${$I('f_int')?.value?('('+$I('f_int').value+')'):''}`,
+      `Colonia/Municipio/Estado: ${$I('f_col')?.value||''}, ${$I('f_city')?.value||''}, ${$I('f_state')?.value||''}`,
+      `Entre calles: ${$I('f_between1')?.value||''} y ${$I('f_between2')?.value||''}`,
+      `Referencias: ${$I('f_refs')?.value||''}`
+    ].join('%0A');
+    const msg=`Hola, quiero finalizar mi compra:%0A%0A${lines.join('%0A')}%0A%0ATotal: ${money(tot)}%0A%0A— Datos de envío —%0A${datos}%0A%0A¿Me apoyan con el proceso?`;
+    open(`https://wa.me/{{ $waNumber }}?text=${msg}`,'_blank');
+  });
+
+  // ====== Inicial ======
+  renderCart(); renderSummary(); setStep(1);
 })();
 </script>
 </x-app-layout>

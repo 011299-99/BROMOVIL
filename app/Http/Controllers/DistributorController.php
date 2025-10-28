@@ -1,45 +1,53 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
 
 class DistributorController extends Controller
 {
     public function apply(Request $request)
     {
-        // 1) Validación: 'confirmed' obliga a que exista password_confirmation igual a password
+        // 1) Validación
         $data = $request->validate([
             'first_name' => ['required','string','max:120'],
             'last_name'  => ['required','string','max:120'],
-            'phone'      => ['nullable','string','max:30'], // pon 'required' si tu tabla users tiene este campo y lo necesitas
             'email'      => ['required','email','max:255','unique:users,email'],
-            'password'   => ['required','confirmed', Password::min(8)],
-            'website'    => ['nullable','size:0'], // honeypot: debe venir vacío
-        ], [
-            'password.confirmed' => 'La confirmación de contraseña no coincide.',
-            'website.size'       => 'Bot detectado.',
+            'phone'      => ['required','string','max:30'],
+            'password'   => ['required','string','min:8','confirmed'],
+            // campos opcionales del perfil distribuidor:
+            'display_name' => ['nullable','string','max:255'],
+            'whatsapp'     => ['nullable','string','max:30'],
+            // honeypot (no se guarda)
+            'website'      => ['nullable','string','max:255'],
         ]);
 
-        // 2) Arma el payload que SÍ existe en tu tabla users
-        $payload = [
-            'name'     => trim($data['first_name'].' '.$data['last_name']),
-            'email'    => $data['email'],
-            'password' => $data['password'], // se hashea solo si en User tienes 'password' => 'hashed'
-        ];
-
-        if (!empty($data['phone'])) {
-            // Solo si tienes columna 'phone' en users y en $fillable
-            $payload['phone'] = $data['phone'];
+        // 2) Antispam simple (honeypot): si viene con algo, aborta “silenciosamente”
+        if (!empty($data['website'] ?? null)) {
+            return back()->with('success', '¡Tu registro se envió con éxito!')->withInput();
         }
 
-        // 3) Crea el usuario (NO pases 'website' ni 'password_confirmation')
-        $user = User::create($payload);
+        // 3) Crear usuario (el hash lo hace el cast del modelo)
+        $user = User::create([
+            'first_name' => $data['first_name'],
+            'last_name'  => $data['last_name'],
+            'email'      => $data['email'],
+            'phone'      => $data['phone'],
+            'password'   => $data['password'],
+        ]);
 
-        // opcional: Auth::login($user);
+        // 4) Crear perfil de distribuidor (opcional)
+        $user->distributor()->create([
+            'display_name' => $data['display_name'] ?? ($user->name ?: $user->email),
+            'whatsapp'     => $data['whatsapp'] ?? null,
+        ]);
 
-        return back()->with('success', '¡Gracias! Tu registro como distribuidor se recibió correctamente.');
+   
+        // 5) Volver al formulario con el flash de éxito
+        return redirect()
+            ->route('distribuidor.form')
+            ->with('success', '¡Tu registro se envió con éxito! Te contactaremos por correo en las próximas 24–48h.');
     }
 }
