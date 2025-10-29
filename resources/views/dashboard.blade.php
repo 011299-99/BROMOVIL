@@ -334,262 +334,327 @@
     </div>
 
     {{-- 3. Gestión del negocio (REDISEÑO) --}}
-    <section id="gestion" class="card card-gst p-0 overflow-hidden scroll-mt-28">
-      {{-- Header decorado --}}
-      <div class="gst-head">
-        <div class="gst-head__bg"></div>
-        <div class="gst-head__inner px-6 py-6">
-          <div class="flex flex-wrap items-center gap-3">
-            <div class="ico ico-ghost"><i class="fas fa-chart-line"></i></div>
-            <h3 class="section-title text-white">Gestión del negocio</h3>
-            <span class="gst-badge">Panel</span>
-          </div>
+<section id="gestion" class="scroll-mt-28 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+  {{-- Header decorado --}}
+  <div class="relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#419cf6] via-[#8a51d3] to-[#844ff0]"></div>
+    <div class="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true"
+         style="background-image: radial-gradient(24px 24px at 24px 24px, rgba(255,255,255,.25) 1px, transparent 1px); background-size: 32px 32px;">
+    </div>
 
-          {{-- Mini KPIs --}}
-          <div class="mt-5 grid sm:grid-cols-3 gap-3">
-            <div class="stat-glass">
-              <div class="stat-k">Comisiones del mes</div>
-              <div class="stat-v brand-text">${{ number_format($stats['month_commission']) }}</div>
-            </div>
-            <div class="stat-glass">
-              <div class="stat-k">Líneas activadas</div>
-              <div class="stat-v text-white">{{ number_format($stats['active_lines']) }}</div>
-            </div>
-            <div class="stat-glass">
-              <div class="stat-k">Saldo SIPAB</div>
-              <div class="stat-v text-white">${{ number_format($stats['sipab_balance']) }}</div>
-            </div>
-          </div>
-        </div>
+    <div class="relative px-6 py-7">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur ring-1 ring-white/20">
+          <i class="fas fa-chart-line"></i>
+        </span>
+        <h3 class="text-xl md:text-2xl font-semibold text-white">Gestión del negocio</h3>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/25">
+          <i class="fas fa-sliders-h"></i> Panel
+        </span>
       </div>
 
-      {{-- Cuerpo --}}
-      <div class="p-6">
-        {{-- Barra de filtros sticky --}}
-        <div class="gst-filters sticky top-4 z-10">
-          <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET" class="gst-filters__inner">
-            <div>
-              <label class="label text-xs block mb-1">Desde</label>
-              <input type="date" name="from" value="{{ request('from') }}" class="input-number inpt">
-            </div>
-            <div>
-              <label class="label text-xs block mb-1">Hasta</label>
-              <input type="date" name="to" value="{{ request('to') }}" class="input-number inpt">
-            </div>
-            <button class="chip chip-primary" type="submit"><i class="fas fa-filter mr-1"></i> Aplicar</button>
-
-            <div class="ml-auto flex items-center gap-2">
-              <a class="chip" href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-                <i class="fas fa-file-excel mr-1"></i> Excel
-              </a>
-              <a class="chip" target="_blank" href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-                <i class="fas fa-file-pdf mr-1"></i> PDF
-              </a>
-            </div>
-          </form>
+      {{-- Mini KPIs --}}
+      <div class="mt-6 grid sm:grid-cols-3 gap-3">
+        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
+          <div class="text-xs/5 opacity-80">Comisiones del mes</div>
+          <div class="mt-1 text-xl font-semibold tracking-tight">${{ number_format($stats['month_commission']) }}</div>
         </div>
-
-        {{-- Acciones --}}
-        <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <a href="{{ $r('comisiones.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-wallet mr-2"></i>Comisiones</div>
-            <div class="ds">Historial y estado</div>
-          </a>
-
-          <button type="button" class="action-tile atile" data-open="#modal-calc">
-            <div class="tt"><i class="fas fa-calculator mr-2"></i>Calculadora</div>
-            <div class="ds">Estimador de residuales</div>
-          </button>
-
-          <a href="{{ $r('lineas.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-sim-card mr-2"></i>Mis líneas</div>
-            <div class="ds">Activas / preactivadas</div>
-          </a>
-
-          <a href="{{ $r('reports.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-chart-pie mr-2"></i>Reportes</div>
-            <div class="ds">Excel / PDF</div>
-          </a>
+        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
+          <div class="text-xs/5 opacity-80">Líneas activadas</div>
+          <div class="mt-1 text-xl font-semibold tracking-tight">{{ number_format($stats['active_lines']) }}</div>
         </div>
-
-        {{-- Preview de últimos movimientos --}}
-        @php
-          $preview = $preview ?? collect([
-            (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
-            (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
-            (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
-          ]);
-        @endphp
-
-        <div class="mt-6">
-          <div class="flex items-center justify-between">
-            <h4 class="font-semibold text-slate-900">Resumen rápido</h4>
-            <a href="{{ $r('comisiones.index') }}" class="text-sm text-blue-600 hover:underline">Ver todo →</a>
-          </div>
-
-          <div class="mt-3 overflow-x-auto">
-            <table class="gst-table min-w-full text-sm">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Concepto</th>
-                  <th>Plan</th>
-                  <th class="text-right">Monto</th>
-                  <th class="text-right">Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($preview as $m)
-                  @php
-                    $state = strtolower($m->estado);
-                    $cls = $state === 'pagado' ? 'ok' : ($state === 'pendiente' ? 'warn' : 'muted');
-                  @endphp
-                  <tr>
-                    <td>{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
-                    <td>{{ $m->concepto }}</td>
-                    <td>{{ $m->plan }}</td>
-                    <td class="text-right">${{ number_format($m->monto,2) }}</td>
-                    <td class="text-right"><span class="pill pill-{{ $cls }}">{{ ucfirst($m->estado) }}</span></td>
-                  </tr>
-                @empty
-                  <tr><td colspan="5" class="empty">Sin movimientos en el rango seleccionado.</td></tr>
-                @endforelse
-              </tbody>
-            </table>
-          </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
+          <div class="text-xs/5 opacity-80">Saldo SIPAB</div>
+          <div class="mt-1 text-xl font-semibold tracking-tight">${{ number_format($stats['sipab_balance']) }}</div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    {{-- Modal Calculadora (REDISEÑO) --}}
+  {{-- Cuerpo --}}
+  <div class="p-6">
+    {{-- Barra de filtros sticky --}}
+    <div class="sticky top-4 z-10">
+      <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET"
+            class="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-500 mb-1">Desde</label>
+          <input type="date" name="from" value="{{ request('from') }}"
+                 class="h-10 w-44 rounded-lg border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-inner focus:border-[#8a51d3] focus:ring-[#8a51d3]">
+        </div>
+        <div>
+          <label class="block text-[11px] font-medium text-slate-500 mb-1">Hasta</label>
+          <input type="date" name="to" value="{{ request('to') }}"
+                 class="h-10 w-44 rounded-lg border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-inner focus:border-[#8a51d3] focus:ring-[#8a51d3]">
+        </div>
+
+        <button type="submit"
+                class="inline-flex h-10 items-center gap-2 rounded-lg bg-gradient-to-r from-[#419cf6] to-[#844ff0] px-4 text-sm font-semibold text-white shadow hover:opacity-95 active:scale-[.98] transition">
+          <i class="fas fa-filter"></i> Aplicar
+        </button>
+
+        <div class="ml-auto flex items-center gap-2">
+          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 active:scale-[.98] transition"
+             href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+            <i class="fas fa-file-excel text-emerald-500"></i> Excel
+          </a>
+          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 active:scale-[.98] transition"
+             target="_blank"
+             href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+            <i class="fas fa-file-pdf text-rose-500"></i> PDF
+          </a>
+        </div>
+      </form>
+    </div>
+
+    {{-- Acciones --}}
+    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <a href="{{ $r('comisiones.index') }}"
+         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
+        <div class="flex items-center gap-2 text-slate-900 font-semibold">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+            <i class="fas fa-wallet"></i>
+          </span>
+          Comisiones
+        </div>
+        <div class="mt-1 text-sm text-slate-500">Historial y estado</div>
+      </a>
+
+      <button type="button" data-open="#modal-calc"
+              class="group rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
+        <div class="flex items-center gap-2 text-slate-900 font-semibold">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+            <i class="fas fa-calculator"></i>
+          </span>
+          Calculadora
+        </div>
+        <div class="mt-1 text-sm text-slate-500">Estimador de residuales</div>
+      </button>
+
+      <a href="{{ $r('lineas.index') }}"
+         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
+        <div class="flex items-center gap-2 text-slate-900 font-semibold">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+            <i class="fas fa-sim-card"></i>
+          </span>
+          Mis líneas
+        </div>
+        <div class="mt-1 text-sm text-slate-500">Activas / preactivadas</div>
+      </a>
+
+      <a href="{{ $r('reports.index') }}"
+         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
+        <div class="flex items-center gap-2 text-slate-900 font-semibold">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+            <i class="fas fa-chart-pie"></i>
+          </span>
+          Reportes
+        </div>
+        <div class="mt-1 text-sm text-slate-500">Excel / PDF</div>
+      </a>
+    </div>
+
+    {{-- Preview de últimos movimientos --}}
+    @php
+      $preview = $preview ?? collect([
+        (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
+        (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
+        (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
+      ]);
+    @endphp
+
+    <div class="mt-8">
+      <div class="flex items-center justify-between">
+        <h4 class="text-base font-semibold text-slate-900">Resumen rápido</h4>
+        <a href="{{ $r('comisiones.index') }}" class="text-sm font-medium text-[#6a4df7] hover:underline">Ver todo →</a>
+      </div>
+
+      <div class="mt-3 overflow-x-auto rounded-xl border border-slate-200">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-50/80 text-slate-600">
+            <tr>
+              <th class="px-4 py-3 text-left font-semibold">Fecha</th>
+              <th class="px-4 py-3 text-left font-semibold">Concepto</th>
+              <th class="px-4 py-3 text-left font-semibold">Plan</th>
+              <th class="px-4 py-3 text-right font-semibold">Monto</th>
+              <th class="px-4 py-3 text-right font-semibold">Estado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @forelse($preview as $m)
+              @php
+                $state = strtolower($m->estado);
+                $pill = $state === 'pagado' ? 'pill-ok' : ($state === 'pendiente' ? 'pill-warn' : 'pill-muted');
+              @endphp
+              <tr class="hover:bg-slate-50/60">
+                <td class="px-4 py-3 text-slate-700">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
+                <td class="px-4 py-3 text-slate-700">{{ $m->concepto }}</td>
+                <td class="px-4 py-3 text-slate-700">{{ $m->plan }}</td>
+                <td class="px-4 py-3 text-right font-semibold text-slate-900">${{ number_format($m->monto,2) }}</td>
+                <td class="px-4 py-3 text-right">
+                  <span class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 {{ $pill }}">
+                    <i class="fas {{ $state==='pagado' ? 'fa-check-circle' : ($state==='pendiente' ? 'fa-clock' : 'fa-minus-circle') }}"></i>
+                    {{ ucfirst($m->estado) }}
+                  </span>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+    {{-- ===== MODAL CALCULADORA (actualizado, no se corta) ===== --}}
     <div id="modal-calc" class="fixed inset-0 z-50 hidden">
+      {{-- Backdrop --}}
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close="#modal-calc"></div>
-      <div class="absolute inset-x-0 top-10 mx-auto max-w-5xl px-6 animate-in">
-        <div class="calc-wrap">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-white/20">
-            <h3 class="font-semibold text-white">Calcula tu potencial de ganancias</h3>
-            <button class="chip chip-white" data-close="#modal-calc">Cerrar</button>
-          </div>
 
-          <div class="p-6">
-            <section id="calc-ganancias">
-              <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6">
-                {{-- Panel de inputs --}}
-                <div class="card glass p-6">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-semibold text-white">Simulación</h3>
-                    <span class="badge badge-ghost">Ganancias aproximadas</span>
-                  </div>
+      {{-- Wrapper con scroll si el contenido crece --}}
+      <div class="relative z-10 flex min-h-dvh items-start md:items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        {{-- Diálogo --}}
+        <div class="w-full max-w-5xl mx-auto">
+          <div class="calc-wrap rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 bg-slate-900/95 max-h-[92dvh] flex flex-col">
 
-                  <div id="calc-plan-wrap" class="mt-6 field">
-                    <label class="label text-white/90">Plan</label>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
-                      <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
-                      <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
-                    </div>
-                    <p class="helper mt-2 text-white/70">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
-                  </div>
-
-                  <div class="mt-6 field">
-                    <label class="label text-white/90">SIMs vendidas / mes</label>
-                    <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
-                      <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
-                      <span class="ml-auto text-xs text-white/70">Valor actual: <b id="calc-out-sims">0</b></span>
-                    </div>
-                    <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
-                  </div>
-
-                  <div id="calc-porta-section" class="mt-6 field">
-                    <label class="label text-white/90">Bono por portabilidad (por activación)</label>
-                    <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
-                      <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
-                      <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
-                      <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
-                      <div class="input-wrp money">
-                        <span class="input-prefix">$</span>
-                        <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24 inpt">
-                        <span class="input-suffix">MXN</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-6 field">
-                    <label class="label text-white/90">Comisión residual</label>
-                    <div class="mt-2 flex flex-wrap items-center gap-3">
-                      <span class="pill pill-dark" id="calc-out-residual-badge">4%</span>
-                      <label class="flex items-center gap-2 text-sm select-none text-white/80">
-                        <input id="calc-in-doble" type="checkbox" class="toggle">
-                        <span>Activaste + de 30 líneas (duplica a 8%)</span>
-                      </label>
-                    </div>
-                    <p class="helper mt-2 text-white/70">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
-
-                    <div class="mt-4">
-                      <label class="label text-white/90">Recargas <u>totales</u> del mes</label>
-                      <div class="mt-2 flex flex-wrap gap-2">
-                        <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
-                        <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
-                        <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24 inpt">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-6 field">
-                    <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
-                      <span class="helper text-white/80">Monto por recarga</span>
-                      <div class="input-wrp money">
-                        <span class="input-prefix">$</span>
-                        <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28 inpt">
-                        <span class="input-suffix">MXN</span>
-                      </div>
-                      <div class="flex gap-2">
-                        <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
-                        <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
-                        <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {{-- Resultados --}}
-                <div class="card p-0 overflow-hidden res-panel">
-                  <div class="res-head">
-                    <div class="res-head__bg"></div>
-                    <div class="px-6 py-4 relative z-[1]">
-                      <h3 class="font-semibold text-white">Resultados estimados</h3>
-                      <p class="text-white/80 text-sm mt-1">Cálculo en tiempo real</p>
-                    </div>
-                  </div>
-
-                  <div class="p-6 grid grid-cols-2 gap-4">
-                    <div class="stat stat-line">
-                      <div class="stat-k">Ganancia por venta</div>
-                      <div id="calc-out-venta" class="stat-v">$0.00</div>
-                    </div>
-                    <div class="stat stat-line">
-                      <div class="stat-k">Comisión residual por activación</div>
-                      <div id="calc-out-residual" class="stat-v">$0.00</div>
-                    </div>
-                    <div class="stat stat-line">
-                      <div class="stat-k">Ganancia por recarga</div>
-                      <div id="calc-out-sipab" class="stat-v">$0.00</div>
-                    </div>
-
-                    <div class="col-span-2 stat-big glow">
-                      <div class="stat-k">Ingreso total estimado / mes</div>
-                      <div id="calc-out-total" class="stat-v-big">$0.00</div>
-                    </div>
-                  </div>
-                </div>
+            {{-- Header sticky --}}
+            <div class="sticky top-0 z-10 px-6 py-4 border-b border-white/15 bg-slate-900/95 backdrop-blur">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-white">Calcula tu potencial de ganancias</h3>
+                <button class="chip chip-white" data-close="#modal-calc">Cerrar</button>
               </div>
-            </section>
+            </div>
+
+            {{-- Contenido scrolleable --}}
+            <div class="flex-1 overflow-y-auto">
+              <div class="p-6">
+                <section id="calc-ganancias">
+                  <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-6 auto-rows-auto">
+
+                    {{-- Panel de inputs --}}
+                    <div class="card glass p-6 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <h3 class="font-semibold text-white">Simulación</h3>
+                        <span class="badge badge-ghost">Ganancias aproximadas</span>
+                      </div>
+
+                      <div id="calc-plan-wrap" class="mt-6 field">
+                        <label class="label text-white/90">Plan</label>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                          <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
+                          <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
+                          <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
+                        </div>
+                        <p class="helper mt-2 text-white/70">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
+                      </div>
+
+                      <div class="mt-6 field">
+                        <label class="label text-white/90">SIMs vendidas / mes</label>
+                        <div class="mt-2 flex flex-wrap items-center gap-2">
+                          <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
+                          <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
+                          <span class="ml-auto text-xs text-white/70">Valor actual: <b id="calc-out-sims">0</b></span>
+                        </div>
+                        <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
+                      </div>
+
+                      <div id="calc-porta-section" class="mt-6 field">
+                        <label class="label text-white/90">Bono por portabilidad (por activación)</label>
+                        <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
+                          <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
+                          <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
+                          <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
+                          <div class="input-wrp money">
+                            <span class="input-prefix">$</span>
+                            <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24 inpt">
+                            <span class="input-suffix">MXN</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mt-6 field">
+                        <label class="label text-white/90">Comisión residual</label>
+                        <div class="mt-2 flex flex-wrap items-center gap-3">
+                          <span class="pill pill-dark" id="calc-out-residual-badge">4%</span>
+                          <label class="flex items-center gap-2 text-sm select-none text-white/80">
+                            <input id="calc-in-doble" type="checkbox" class="toggle">
+                            <span>Activaste + de 30 líneas (duplica a 8%)</span>
+                          </label>
+                        </div>
+                        <p class="helper mt-2 text-white/70">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
+
+                        <div class="mt-4">
+                          <label class="label text-white/90">Recargas <u>totales</u> del mes</label>
+                          <div class="mt-2 flex flex-wrap gap-2">
+                            <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
+                            <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
+                            <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24 inpt">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mt-6 field">
+                        <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
+                          <span class="helper text-white/80">Monto por recarga</span>
+                          <div class="input-wrp money">
+                            <span class="input-prefix">$</span>
+                            <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28 inpt">
+                            <span class="input-suffix">MXN</span>
+                          </div>
+                          <div class="flex gap-2">
+                            <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
+                            <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
+                            <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {{-- Resultados --}}
+                    <div class="card p-0 overflow-hidden res-panel min-w-0">
+                      <div class="res-head relative">
+                        <div class="res-head__bg"></div>
+                        <div class="px-6 py-4 relative z-[1]">
+                          <h3 class="font-semibold text-white">Resultados estimados</h3>
+                          <p class="text-white/80 text-sm mt-1">Cálculo en tiempo real</p>
+                        </div>
+                      </div>
+
+                      <div class="p-6 grid grid-cols-2 gap-4">
+                        <div class="stat stat-line">
+                          <div class="stat-k">Ganancia por venta</div>
+                          <div id="calc-out-venta" class="stat-v">$0.00</div>
+                        </div>
+                        <div class="stat stat-line">
+                          <div class="stat-k">Comisión residual por activación</div>
+                          <div id="calc-out-residual" class="stat-v">$0.00</div>
+                        </div>
+                        <div class="stat stat-line">
+                          <div class="stat-k">Ganancia por recarga</div>
+                          <div id="calc-out-sipab" class="stat-v">$0.00</div>
+                        </div>
+
+                        <div class="col-span-2 stat-big glow">
+                          <div class="stat-k">Ingreso total estimado / mes</div>
+                          <div id="calc-out-total" class="stat-v-big">$0.00</div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -932,17 +997,45 @@
       };
     })();
 
-    // === Modal open/close ===
+    // === Modal open/close (actualizado: bloquea scroll del documento) ===
     (function(){
-      document.querySelectorAll('[data-open]').forEach(btn=>{
-        btn.addEventListener('click',()=> document.querySelector(btn.dataset.open)?.classList.remove('hidden'));
+      const openers = document.querySelectorAll('[data-open]');
+      const closers = document.querySelectorAll('[data-close]');
+      const htmlEl  = document.documentElement;
+
+      function openModal(sel){
+        const el = document.querySelector(sel);
+        if (!el) return;
+        el.classList.remove('hidden');
+        htmlEl.classList.add('overflow-hidden'); // bloquea scroll del fondo
+      }
+      function closeModal(sel){
+        const el = document.querySelector(sel);
+        if (!el) return;
+        el.classList.add('hidden');
+        htmlEl.classList.remove('overflow-hidden');
+      }
+
+      openers.forEach(btn=>{
+        btn.addEventListener('click', ()=> openModal(btn.dataset.open));
       });
-      document.querySelectorAll('[data-close]').forEach(btn=>{
-        btn.addEventListener('click',()=> document.querySelector(btn.dataset.close)?.classList.add('hidden'));
+      closers.forEach(btn=>{
+        btn.addEventListener('click', ()=> closeModal(btn.dataset.close));
       });
+
+      // cierre por ESC
       document.addEventListener('keydown', (e)=>{
         if(e.key === 'Escape'){
           document.querySelectorAll('[id^="modal-"]').forEach(m=> m.classList.add('hidden'));
+          htmlEl.classList.remove('overflow-hidden');
+        }
+      });
+
+      // cierre si se hace click en backdrop con data-close (ya incluido en el HTML)
+      document.addEventListener('click', (e)=>{
+        const tgt = e.target.closest('[data-close]');
+        if (tgt && tgt.getAttribute('data-close').startsWith('#modal-')) {
+          htmlEl.classList.remove('overflow-hidden');
         }
       });
     })();
@@ -1050,3 +1143,4 @@
 
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 </x-app-layout>
+
