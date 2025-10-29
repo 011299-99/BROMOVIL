@@ -343,8 +343,9 @@
       </div>
     </div>
 
-    {{-- 3) Gestión del negocio --}}
+    {{-- 3. Gestión del negocio (REDISEÑO) --}}
     <section id="gestion" class="card card-gst p-0 overflow-hidden scroll-mt-28">
+      {{-- Header decorado --}}
       <div class="gst-head">
         <div class="gst-head__bg"></div>
         <div class="gst-head__inner px-6 py-6">
@@ -354,6 +355,7 @@
             <span class="gst-badge">Panel</span>
           </div>
 
+          {{-- Mini KPIs --}}
           <div class="mt-5 grid sm:grid-cols-3 gap-3">
             <div class="stat-glass">
               <div class="stat-k">Comisiones del mes</div>
@@ -371,8 +373,9 @@
         </div>
       </div>
 
+      {{-- Cuerpo --}}
       <div class="p-6">
-        {{-- Filtros --}}
+        {{-- Barra de filtros sticky --}}
         <div class="gst-filters sticky top-4 z-10">
           <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET" class="gst-filters__inner">
             <div>
@@ -385,90 +388,235 @@
             </div>
             <button class="chip chip-primary" type="submit"><i class="fas fa-filter mr-1"></i> Aplicar</button>
 
-            <div class="ml-auto flex items-center gap-2">
-              <a class="chip" href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-                <i class="fas fa-file-excel mr-1"></i> Excel
-              </a>
-              <a class="chip" target="_blank" href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-                <i class="fas fa-file-pdf mr-1"></i> PDF
-              </a>
-            </div>
-          </form>
+      <div class="ml-auto flex items-center gap-2">
+        <button type="submit" class="btn-primary h-10 px-4"><i class="fas fa-filter"></i> Aplicar</button>
+        <a class="btn-soft h-10 px-3"
+           href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+          <i class="fas fa-file-excel text-emerald-500"></i> Excel
+        </a>
+        <a class="btn-soft h-10 px-3" target="_blank"
+           href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+          <i class="fas fa-file-pdf text-rose-500"></i> PDF
+        </a>
+      </div>
+    </form>
+  </div>
+
+  {{-- Contenido con layout de 2 columnas --}}
+  <div class="p-6 grid lg:grid-cols-12 gap-6">
+
+    {{-- Columna lateral: estado hoy + acciones rápidas --}}
+    <aside class="lg:col-span-4 space-y-4">
+      <div class="card p-4 atile">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-slate-900 font-semibold">Estado de hoy</div>
+            <p class="text-sm text-slate-500">Actividad consolidada</p>
+          </div>
+          <span class="pill">Hoy {{ now()->format('d/m') }}</span>
         </div>
 
-        {{-- Acciones --}}
-        <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <a href="{{ $r('comisiones.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-wallet mr-2"></i>Comisiones</div>
-            <div class="ds">Historial y estado</div>
-          </a>
+        <ul class="mt-4 space-y-3">
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Activaciones</span>
+            <span class="font-semibold text-slate-900">+3</span>
+          </li>
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Portabilidades</span>
+            <span class="font-semibold text-slate-900">+1</span>
+          </li>
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Recargas</span>
+            <span class="font-semibold text-slate-900">+18</span>
+          </li>
+        </ul>
+      </div>
 
-          <button type="button" class="action-tile atile" data-open="#modal-calc">
-            <div class="tt"><i class="fas fa-calculator mr-2"></i>Calculadora</div>
-            <div class="ds">Estimador de residuales</div>
-          </button>
+      <div class="grid grid-cols-2 gap-3">
+        <a href="{{ $r('lineas.create') }}"
+           class="group card p-4 atile hover:-translate-y-[2px] transition">
+          <div class="flex items-center gap-2 text-slate-900 font-semibold">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+              <i class="fas fa-bolt"></i>
+            </span>
+            Activar línea
+          </div>
+          <div class="mt-1 text-sm text-slate-500">Alta inmediata</div>
+        </a>
 
-          <a href="{{ $r('lineas.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-sim-card mr-2"></i>Mis líneas</div>
-            <div class="ds">Activas / preactivadas</div>
-          </a>
+        <a href="{{ $r('portabilidades.create') }}"
+           class="group card p-4 atile hover:-translate-y-[2px] transition">
+          <div class="flex items-center gap-2 text-slate-900 font-semibold">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+              <i class="fas fa-exchange-alt"></i>
+            </span>
+            Portabilidad
+          </div>
+          <div class="mt-1 text-sm text-slate-500">Conserva su número</div>
+        </a>
+      </div>
 
-          <a href="{{ $r('reports.index') }}" class="action-tile atile">
-            <div class="tt"><i class="fas fa-chart-pie mr-2"></i>Reportes</div>
-            <div class="ds">Excel / PDF</div>
-          </a>
-        </div>
+        {{-- Preview de últimos movimientos --}}
+        @php
+          $preview = $preview ?? collect([
+            (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
+            (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
+            (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
+          ]);
+        @endphp
 
-        {{-- Resumen rápido --}}
         <div class="mt-6">
           <div class="flex items-center justify-between">
-            <h4 class="font-semibold text-slate-900">Resumen rápido</h4>
-            <a href="{{ $r('comisiones.index') }}" class="text-sm text-blue-600 hover:underline">Ver todo →</a>
+            <div class="text-slate-900 font-semibold">Resumen rápido</div>
+            <div class="flex items-center gap-2">
+              <button class="chip chip-ghost" data-switch="tabla" aria-pressed="true">Tabla</button>
+              <button class="chip chip-ghost" data-switch="cards">Tarjetas</button>
+            </div>
           </div>
 
-          <div class="mt-3 overflow-x-auto">
-            <table class="gst-table min-w-full text-sm">
-              <thead>
+          {{-- Tabla --}}
+          <div class="mt-3 overflow-x-auto rounded-xl border border-slate-200 view-table">
+            <table class="min-w-full text-sm" id="gstTable">
+              <thead class="bg-slate-50/80 text-slate-600">
                 <tr>
-                  <th>Fecha</th>
-                  <th>Concepto</th>
-                  <th>Plan</th>
-                  <th class="text-right">Monto</th>
-                  <th class="text-right">Estado</th>
+                  <th class="th-sort px-4 py-3 text-left font-semibold" data-sort="date">Fecha</th>
+                  <th class="px-4 py-3 text-left font-semibold">Concepto</th>
+                  <th class="px-4 py-3 text-left font-semibold">Plan</th>
+                  <th class="th-sort px-4 py-3 text-right font-semibold" data-sort="amount">Monto</th>
+                  <th class="px-4 py-3 text-right font-semibold">Estado</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="divide-y divide-slate-100" id="gstBody">
                 @forelse($preview as $m)
                   @php
                     $state = strtolower($m->estado);
-                    $cls = $state === 'pagado' ? 'ok' : ($state === 'pendiente' ? 'warn' : 'muted');
+                    $pill = $state === 'pagado' ? 'pill-ok' : ($state === 'pendiente' ? 'pill-warn' : 'pill-muted');
                   @endphp
-                  <tr>
-                    <td>{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
-                    <td>{{ $m->concepto }}</td>
-                    <td>{{ $m->plan }}</td>
-                    <td class="text-right">${{ number_format($m->monto,2) }}</td>
-                    <td class="text-right"><span class="pill pill-{{ $cls }}">{{ ucfirst($m->estado) }}</span></td>
+                  <tr class="hover:bg-slate-50/60">
+                    <td class="px-4 py-3 text-slate-700" data-date="{{ \Carbon\Carbon::parse($m->fecha)->format('Y-m-d') }}">
+                      {{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}
+                    </td>
+                    <td class="px-4 py-3 text-slate-700">{{ $m->concepto }}</td>
+                    <td class="px-4 py-3 text-slate-700">{{ $m->plan }}</td>
+                    <td class="px-4 py-3 text-right font-semibold text-slate-900" data-amount="{{ number_format($m->monto,2,'.','') }}">
+                      ${{ number_format($m->monto,2) }}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 {{ $pill }}">
+                        <i class="fas {{ $state==='pagado' ? 'fa-check-circle' : ($state==='pendiente' ? 'fa-clock' : 'fa-minus-circle') }}"></i>
+                        {{ ucfirst($m->estado) }}
+                      </span>
+                    </td>
                   </tr>
                 @empty
-                  <tr><td colspan="5" class="empty">Sin movimientos en el rango seleccionado.</td></tr>
+                  <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td></tr>
                 @endforelse
               </tbody>
             </table>
           </div>
+
+          {{-- Tarjetas --}}
+          <div class="mt-3 hidden view-cards grid md:grid-cols-2 gap-3" id="gstCards">
+            @foreach($preview as $m)
+              @php
+                $state = strtolower($m->estado);
+                $pill = $state === 'pagado' ? 'pill-ok' : ($state === 'pendiente' ? 'pill-warn' : 'pill-muted');
+              @endphp
+              <div class="card p-4">
+                <div class="text-sm text-slate-500">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</div>
+                <div class="mt-1 font-semibold text-slate-900">{{ $m->concepto }} · {{ $m->plan }}</div>
+                <div class="mt-1 text-lg font-extrabold text-slate-900">${{ number_format($m->monto,2) }}</div>
+                <div class="mt-2"><span class="pill {{ $pill }}">{{ ucfirst($m->estado) }}</span></div>
+              </div>
+            @endforeach
+          </div>
         </div>
       </div>
-    </section>
 
-    {{-- Modal Calculadora --}}
-    <div id="modal-calc" class="fixed inset-0 z-50 hidden">
-      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close="#modal-calc"></div>
-      <div class="absolute inset-x-0 top-10 mx-auto max-w-5xl px-6 animate-in">
-        <div class="calc-wrap">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-white/20">
-            <h3 class="font-semibold text-white">Calcula tu potencial de ganancias</h3>
-            <button class="chip chip-white" data-close="#modal-calc">Cerrar</button>
+      {{-- Panel: Operaciones (links directos) --}}
+      <div class="gst-panel hidden" data-panel="operaciones">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <a href="{{ $r('lineas.index') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-sim-card"></i>
+              </span>
+              Mis líneas
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Activas / preactivadas</div>
+          </a>
+
+          <a href="{{ $r('reports.index') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-chart-pie"></i>
+              </span>
+              Reportes
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Excel / PDF</div>
+          </a>
+
+          <a href="{{ $r('store') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-box-open"></i>
+              </span>
+              Comprar SIMs
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Stock y kits</div>
+          </a>
+
+          <button type="button" data-open="#modal-calc"
+                  class="group card p-5 atile text-left hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-calculator"></i>
+              </span>
+              Calculadora
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Estimador de residuales</div>
+          </button>
+        </div>
+      </div>
+
+      {{-- Panel: Comisiones (atajo listado) --}}
+      <div class="gst-panel hidden" data-panel="comisiones">
+        <div class="card p-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-slate-900 font-semibold">Comisiones</div>
+              <p class="text-sm text-slate-500">Histórico y estado de pago</p>
+            </div>
+            <a href="{{ $r('comisiones.index') }}" class="btn-primary h-10">Abrir listado</a>
           </div>
+          <div class="mt-4 text-sm text-slate-600">
+            Visualiza las comisiones por activación, residuales por recarga y bonos por portabilidad.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    {{-- Modal Calculadora (REDISEÑO) --}}
+    <div id="modal-calc" class="fixed inset-0 z-50 hidden">
+      {{-- Backdrop --}}
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close="#modal-calc"></div>
+
+      {{-- Wrapper con scroll si el contenido crece --}}
+      <div class="relative z-10 flex min-h-dvh items-start md:items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        {{-- Diálogo --}}
+        <div class="w-full max-w-5xl mx-auto">
+          <div class="calc-wrap rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 bg-slate-900/95 max-h-[92dvh] flex flex-col">
+
+            {{-- Header sticky --}}
+            <div class="sticky top-0 z-10 px-6 py-4 border-b border-white/15 bg-slate-900/95 backdrop-blur">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-white">Calcula tu potencial de ganancias</h3>
+                <button class="chip chip-white" data-close="#modal-calc">Cerrar</button>
+              </div>
+            </div>
 
           <div class="p-6">
             <section id="calc-ganancias">
@@ -477,118 +625,122 @@
                 <div class="card glass p-6">
                   <div class="flex items-center justify-between">
                     <h3 class="font-semibold text-white">Simulación</h3>
-                    <span class="badge-ghost">Ganancias aproximadas</span>
+                    <span class="badge badge-ghost">Ganancias aproximadas</span>
                   </div>
 
-                  <div id="calc-plan-wrap" class="mt-6 field">
-                    <label class="label text-white/90">Plan</label>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
-                      <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
-                      <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
-                    </div>
-                    <p class="helper mt-2 text-white/70">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
-                  </div>
+                      <div id="calc-plan-wrap" class="mt-6 field">
+                        <label class="label text-white/90">Plan</label>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                          <button type="button" class="chip is-active" data-bind="plan" data-value="basico">Básico ilimitado</button>
+                          <button type="button" class="chip" data-bind="plan" data-value="ideal">Ideal ilimitado</button>
+                          <button type="button" class="chip" data-bind="plan" data-value="poderoso">Poderoso ilimitado</button>
+                        </div>
+                        <p class="helper mt-2 text-white/70">Ganancia por activación según plan: <b id="calc-out-gan-plan">$50.00</b></p>
+                      </div>
 
-                  <div class="mt-6 field">
-                    <label class="label text-white/90">SIMs vendidas / mes</label>
-                    <div class="mt-2 flex flex-wrap items-center gap-2">
-                      <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
-                      <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
-                      <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
-                      <span class="ml-auto text-xs text-white/70">Valor actual: <b id="calc-out-sims">0</b></span>
-                    </div>
-                    <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
-                  </div>
+                      <div class="mt-6 field">
+                        <label class="label text-white/90">SIMs vendidas / mes</label>
+                        <div class="mt-2 flex flex-wrap items-center gap-2">
+                          <button type="button" class="chip" data-bind="sims" data-value="0">0</button>
+                          <button type="button" class="chip is-active" data-bind="sims" data-value="10">10</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="30">30</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="50">50</button>
+                          <button type="button" class="chip" data-bind="sims" data-value="100">100</button>
+                          <span class="ml-auto text-xs text-white/70">Valor actual: <b id="calc-out-sims">0</b></span>
+                        </div>
+                        <input id="calc-in-sims" type="range" min="0" max="300" value="0" step="1" class="mt-3 slider w-full">
+                      </div>
 
-                  <div id="calc-porta-section" class="mt-6 field">
-                    <label class="label text-white/90">Bono por portabilidad (por activación)</label>
-                    <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
-                      <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
-                      <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
-                      <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
-                      <div class="input-wrp money">
-                        <span class="input-prefix">$</span>
-                        <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24 inpt">
-                        <span class="input-suffix">MXN</span>
+                      <div id="calc-porta-section" class="mt-6 field">
+                        <label class="label text-white/90">Bono por portabilidad (por activación)</label>
+                        <div id="calc-porta-wrap" class="mt-2 flex flex-wrap gap-2">
+                          <button type="button" class="chip is-active" data-bind="porta" data-value="0">$0</button>
+                          <button type="button" class="chip" data-bind="porta" data-value="10">$10</button>
+                          <button type="button" class="chip" data-bind="porta" data-value="30">$30</button>
+                          <div class="input-wrp money">
+                            <span class="input-prefix">$</span>
+                            <input id="calc-in-porta" type="number" min="0" step="0.01" value="0" class="input-number w-24 inpt">
+                            <span class="input-suffix">MXN</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mt-6 field">
+                        <label class="label text-white/90">Comisión residual</label>
+                        <div class="mt-2 flex flex-wrap items-center gap-3">
+                          <span class="pill pill-dark" id="calc-out-residual-badge">4%</span>
+                          <label class="flex items-center gap-2 text-sm select-none text-white/80">
+                            <input id="calc-in-doble" type="checkbox" class="toggle">
+                            <span>Activaste + de 30 líneas (duplica a 8%)</span>
+                          </label>
+                        </div>
+                        <p class="helper mt-2 text-white/70">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
+
+                        <div class="mt-4">
+                          <label class="label text-white/90">Recargas <u>totales</u> del mes</label>
+                          <div class="mt-2 flex flex-wrap gap-2">
+                            <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
+                            <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
+                            <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24 inpt">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mt-6 field">
+                        <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
+                          <span class="helper text-white/80">Monto por recarga</span>
+                          <div class="input-wrp money">
+                            <span class="input-prefix">$</span>
+                            <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28 inpt">
+                            <span class="input-suffix">MXN</span>
+                          </div>
+                          <div class="flex gap-2">
+                            <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
+                            <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
+                            <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="mt-6 field">
-                    <label class="label text-white/90">Comisión residual</label>
-                    <div class="mt-2 flex flex-wrap items-center gap-3">
-                      <span class="pill pill-dark" id="calc-out-residual-badge">4%</span>
-                      <label class="flex items-center gap-2 text-sm select-none text-white/80">
-                        <input id="calc-in-doble" type="checkbox" class="toggle">
-                        <span>Activaste + de 30 líneas (duplica a 8%)</span>
-                      </label>
-                    </div>
-                    <p class="helper mt-2 text-white/70">Residual (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.</p>
+                    {{-- Resultados --}}
+                    <div class="card p-0 overflow-hidden res-panel min-w-0">
+                      <div class="res-head relative">
+                        <div class="res-head__bg"></div>
+                        <div class="px-6 py-4 relative z-[1]">
+                          <h3 class="font-semibold text-white">Resultados estimados</h3>
+                          <p class="text-white/80 text-sm mt-1">Cálculo en tiempo real</p>
+                        </div>
+                      </div>
 
-                    <div class="mt-4">
-                      <label class="label text-white/90">Recargas <u>totales</u> del mes</label>
-                      <div class="mt-2 flex flex-wrap gap-2">
-                        <button type="button" class="chip" data-bind="recargas" data-value="10">10 recargas</button>
-                        <button type="button" class="chip" data-bind="recargas" data-value="100">100 recargas</button>
-                        <input id="calc-in-recargas" type="number" min="0" step="1" value="0" class="input-number w-24 inpt">
+                      <div class="p-6 grid grid-cols-2 gap-4">
+                        <div class="stat stat-line">
+                          <div class="stat-k">Ganancia por venta</div>
+                          <div id="calc-out-venta" class="stat-v">$0.00</div>
+                        </div>
+                        <div class="stat stat-line">
+                          <div class="stat-k">Comisión residual por activación</div>
+                          <div id="calc-out-residual" class="stat-v">$0.00</div>
+                        </div>
+                        <div class="stat stat-line">
+                          <div class="stat-k">Ganancia por recarga</div>
+                          <div id="calc-out-sipab" class="stat-v">$0.00</div>
+                        </div>
+
+                        <div class="col-span-2 stat-big glow">
+                          <div class="stat-k">Ingreso total estimado / mes</div>
+                          <div id="calc-out-total" class="stat-v-big">$0.00</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="mt-6 field">
-                    <div id="calc-sipab-wrap" class="mt-2 flex flex-wrap items-center gap-3">
-                      <span class="helper text-white/80">Monto por recarga</span>
-                      <div class="input-wrp money">
-                        <span class="input-prefix">$</span>
-                        <input id="calc-in-monto" type="number" min="0" step="0.01" value="99" class="input-number w-28 inpt">
-                        <span class="input-suffix">MXN</span>
-                      </div>
-                      <div class="flex gap-2">
-                        <button type="button" class="chip is-active" data-bind="monto" data-value="99">$99</button>
-                        <button type="button" class="chip" data-bind="monto" data-value="199">$199</button>
-                        <button type="button" class="chip" data-bind="monto" data-value="239">$239</button>
-                      </div>
-                    </div>
                   </div>
-                </div>
-
-                {{-- Resultados --}}
-                <div class="card p-0 overflow-hidden res-panel">
-                  <div class="res-head">
-                    <div class="res-head__bg"></div>
-                    <div class="px-6 py-4 relative z-[1]">
-                      <h3 class="font-semibold text-white">Resultados estimados</h3>
-                      <p class="text-white/80 text-sm mt-1">Cálculo en tiempo real</p>
-                    </div>
-                  </div>
-
-                  <div class="p-6 grid grid-cols-2 gap-4">
-                    <div class="stat stat-line">
-                      <div class="stat-k">Ganancia por venta</div>
-                      <div id="calc-out-venta" class="stat-v">$0.00</div>
-                    </div>
-                    <div class="stat stat-line">
-                      <div class="stat-k">Comisión residual por activación</div>
-                      <div id="calc-out-residual" class="stat-v">$0.00</div>
-                    </div>
-                    <div class="stat stat-line">
-                      <div class="stat-k">Ganancia por recarga</div>
-                      <div id="calc-out-sipab" class="stat-v">$0.00</div>
-                    </div>
-
-                    <div class="col-span-2 stat-big glow">
-                      <div class="stat-k">Ingreso total estimado / mes</div>
-                      <div id="calc-out-total" class="stat-v-big">$0.00</div>
-                    </div>
-                  </div>
-                </div>
+                </section>
               </div>
-            </section>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -725,19 +877,7 @@
     .res-panel .stat,.res-panel .stat-big{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.18)}
     .res-panel .stat-k{color:#cbd5e1}
     .res-panel .stat-v{color:#fff}
-
-    /* Gradientes auxiliares (iconos) */
-    .bg-grad-sky{background:linear-gradient(135deg,#38bdf8,#6366f1)}
-    .bg-grad-purple{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
-
-    /* FAB Braulio */
-    .braulio-fab{position:fixed; right:16px; bottom:16px; width:86px; height:86px; border-radius:9999px; display:grid; place-items:center; z-index:48; background:radial-gradient(circle at 50% 50%, rgba(168,85,247,.18) 60%, transparent 61%); box-shadow:0 16px 40px rgba(107,33,168,.25); transition:transform .2s}
-    .braulio-fab:hover{ transform:translateY(-2px) }
-    .braulio-fab::before,.braulio-fab::after{content:""; position:absolute; inset:0; border-radius:9999px; border:8px solid rgba(168,85,247,.35); animation:braulioRing 2.2s infinite}
-    .braulio-fab::after{ animation-delay:1.1s }
-    @keyframes braulioRing{0%{transform:scale(.85);opacity:.9}70%{transform:scale(1.15);opacity:.18}100%{transform:scale(1.22);opacity:0}}
-    .braulio-img{width:68px; height:68px; border-radius:9999px; object-fit:cover; background:#fff; border:6px solid rgba(255,255,255,.95); box-shadow:0 6px 14px rgba(2,6,23,.15); z-index:1}
-    .braulio-badge{position:absolute; top:14px; right:14px; width:14px; height:14px; border-radius:9999px; background:#ef4444; border:2px solid #fff; box-shadow:0 0 0 2px rgba(168,85,247,.25)}
+    .glow{box-shadow:0 15px 40px rgba(65,156,246,.18),0 10px 26px rgba(132,79,240,.16)}
   </style>
 
   {{-- ======= SCRIPTS ======= --}}
@@ -756,17 +896,45 @@
       activate('movilidad');
     })();
 
-    // === Modal open/close ===
+    // === Modal open/close (actualizado: bloquea scroll del documento) ===
     (function(){
-      document.querySelectorAll('[data-open]').forEach(btn=>{
-        btn.addEventListener('click',()=> document.querySelector(btn.dataset.open)?.classList.remove('hidden'));
+      const openers = document.querySelectorAll('[data-open]');
+      const closers = document.querySelectorAll('[data-close]');
+      const htmlEl  = document.documentElement;
+
+      function openModal(sel){
+        const el = document.querySelector(sel);
+        if (!el) return;
+        el.classList.remove('hidden');
+        htmlEl.classList.add('overflow-hidden'); // bloquea scroll del fondo
+      }
+      function closeModal(sel){
+        const el = document.querySelector(sel);
+        if (!el) return;
+        el.classList.add('hidden');
+        htmlEl.classList.remove('overflow-hidden');
+      }
+
+      openers.forEach(btn=>{
+        btn.addEventListener('click', ()=> openModal(btn.dataset.open));
       });
-      document.querySelectorAll('[data-close]').forEach(btn=>{
-        btn.addEventListener('click',()=> document.querySelector(btn.dataset.close)?.classList.add('hidden'));
+      closers.forEach(btn=>{
+        btn.addEventListener('click', ()=> closeModal(btn.dataset.close));
       });
+
+      // cierre por ESC
       document.addEventListener('keydown', (e)=>{
         if(e.key === 'Escape'){
           document.querySelectorAll('[id^="modal-"]').forEach(m=> m.classList.add('hidden'));
+          htmlEl.classList.remove('overflow-hidden');
+        }
+      });
+
+      // cierre si se hace click en backdrop con data-close (ya incluido en el HTML)
+      document.addEventListener('click', (e)=>{
+        const tgt = e.target.closest('[data-close]');
+        if (tgt && tgt.getAttribute('data-close').startsWith('#modal-')) {
+          htmlEl.classList.remove('overflow-hidden');
         }
       });
     })();
@@ -870,8 +1038,106 @@
 
       render();
     })(document.getElementById('calc-ganancias'));
+
+    // ===== Tabs de Gestión =====
+  (function(){
+    const tabs = document.querySelectorAll('.gst-tab');
+    const panels = document.querySelectorAll('.gst-panel');
+    tabs.forEach(t=>{
+      t.addEventListener('click', ()=>{
+        tabs.forEach(x=>x.classList.remove('is-active'));
+        t.classList.add('is-active');
+        const name = t.dataset.tab;
+        panels.forEach(p=> p.classList.toggle('hidden', p.dataset.panel !== name));
+      });
+    });
+  })();
+
+  // ===== Vista Tabla / Tarjetas (Resumen) =====
+  (function(){
+    const btnTable = document.querySelector('[data-switch="tabla"]');
+    const btnCards = document.querySelector('[data-switch="cards"]');
+    const tableWrap = document.querySelector('.view-table');
+    const cardsWrap = document.querySelector('.view-cards');
+
+    function setView(mode){
+      const isTable = mode === 'tabla';
+      tableWrap.classList.toggle('is-hidden', !isTable);
+      cardsWrap.classList.toggle('is-visible', !isTable);
+      btnTable.setAttribute('aria-pressed', isTable ? 'true':'false');
+      btnCards.setAttribute('aria-pressed', !isTable ? 'true':'false');
+    }
+    btnTable?.addEventListener('click', ()=> setView('tabla'));
+    btnCards?.addEventListener('click', ()=> setView('cards'));
+  })();
+
+  // ===== Ordenación simple por fecha y monto =====
+  (function(){
+    const table = document.getElementById('gstTable');
+    if(!table) return;
+    const body = document.getElementById('gstBody');
+
+    function sortRows(by){
+      const rows = Array.from(body.querySelectorAll('tr'));
+      rows.sort((a,b)=>{
+        if(by==='date'){
+          return (a.querySelector('[data-date]').dataset.date > b.querySelector('[data-date]').dataset.date) ? -1 : 1;
+        }else{
+          const av = parseFloat(a.querySelector('[data-amount]').dataset.amount||'0');
+          const bv = parseFloat(b.querySelector('[data-amount]').dataset.amount||'0');
+          return bv - av;
+        }
+      });
+      body.innerHTML = '';
+      rows.forEach(r=> body.appendChild(r));
+    }
+
+    table.addEventListener('click', (e)=>{
+      const th = e.target.closest('.th-sort');
+      if(!th) return;
+      sortRows(th.dataset.sort);
+    });
+  })();
+
+  // ===== Micro sparklines (sin librerías) =====
+  (function(){
+    const wrapNodes = document.querySelectorAll('.spark-wrap');
+    wrapNodes.forEach(w=>{
+      const pts = (w.dataset.spark || '').replace(/[^0-9,.-]/g,'').split(',').map(Number).filter(n=>!isNaN(n));
+      if(!pts.length) return;
+      const W = w.clientWidth || 240, H = 26, p = 2;
+      const min = Math.min(...pts), max = Math.max(...pts);
+      const norm = v => (H - p) - ((v - min)/(max-min || 1))*(H - p*2);
+      const step = (W - p*2) / (pts.length-1 || 1);
+      let d = '';
+      pts.forEach((v,i)=>{ const x = p + i*step; const y = norm(v); d += (i? ' L':'M') + x + ' ' + y; });
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.innerHTML = `
+        <polyline points="" fill="none" stroke="url(#g)" stroke-width="2"/>
+        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs>
+        <path d="${d}" fill="none" stroke="white" stroke-opacity=".9" stroke-width="2" />
+      `;
+      w.innerHTML = '';
+      w.appendChild(svg);
+    });
+  })();
+
+  // ===== Recarga rápida (adaptable a WhatsApp por ahora) =====
+  window.BM_UI = window.BM_UI || {};
+  BM_UI.quickTopup = function(form){
+    const msisdn = form.msisdn.value.trim();
+    const monto  = form.monto.value;
+    if(!msisdn || !monto) return false;
+    const msg = `Hola, quiero recargar ${monto} a ${msisdn}`;
+    const wa = document.getElementById('cartRoot')?.dataset?.wa || '{{ $waNumber }}';
+    const url = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+    return false;
+  };
   </script>
 
   {{-- Font Awesome (reemplaza yourkitid por tu kit si usas CDN de FA Pro) --}}
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 </x-app-layout>
+
