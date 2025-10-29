@@ -333,14 +333,14 @@
       </div>
     </div>
 
-    {{-- 3. Gestión del negocio (REDISEÑO) --}}
+    {{-- 3. Gestión del negocio (SUPER REDISEÑO) --}}
 <section id="gestion" class="scroll-mt-28 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
-  {{-- Header decorado --}}
+
+  {{-- Encabezado con identidad --}}
   <div class="relative">
     <div class="absolute inset-0 bg-gradient-to-r from-[#419cf6] via-[#8a51d3] to-[#844ff0]"></div>
-    <div class="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true"
-         style="background-image: radial-gradient(24px 24px at 24px 24px, rgba(255,255,255,.25) 1px, transparent 1px); background-size: 32px 32px;">
-    </div>
+    <div class="absolute inset-0 opacity-15 pointer-events-none"
+         style="background-image: radial-gradient(24px 24px at 24px 24px, rgba(255,255,255,.25) 1px, transparent 1px); background-size: 32px 32px;"></div>
 
     <div class="relative px-6 py-7">
       <div class="flex flex-wrap items-center gap-3">
@@ -348,164 +348,287 @@
           <i class="fas fa-chart-line"></i>
         </span>
         <h3 class="text-xl md:text-2xl font-semibold text-white">Gestión del negocio</h3>
-        <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/25">
-          <i class="fas fa-sliders-h"></i> Panel
-        </span>
+
+        {{-- Tabs primarios --}}
+        <div class="ml-auto flex flex-wrap items-center gap-1 bg-white/10 rounded-full p-1 ring-1 ring-white/15">
+          <button type="button" class="gst-tab is-active" data-tab="resumen">Resumen</button>
+          <button type="button" class="gst-tab" data-tab="operaciones">Operaciones</button>
+          <button type="button" class="gst-tab" data-tab="comisiones">Comisiones</button>
+        </div>
       </div>
 
-      {{-- Mini KPIs --}}
-      <div class="mt-6 grid sm:grid-cols-3 gap-3">
-        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
-          <div class="text-xs/5 opacity-80">Comisiones del mes</div>
-          <div class="mt-1 text-xl font-semibold tracking-tight">${{ number_format($stats['month_commission']) }}</div>
+      {{-- Mini KPIs con micro-tendencias --}}
+      <div class="mt-6 grid sm:grid-cols-3 gap-3 text-white">
+        <div class="kpi kpi-glass">
+          <div class="kpi-k">Comisiones del mes</div>
+          <div class="kpi-v">${{ number_format($stats['month_commission']) }}</div>
+          <div class="spark-wrap" data-spark="[45,62,58,74,69,80,92]"></div>
         </div>
-        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
-          <div class="text-xs/5 opacity-80">Líneas activadas</div>
-          <div class="mt-1 text-xl font-semibold tracking-tight">{{ number_format($stats['active_lines']) }}</div>
+        <div class="kpi kpi-glass">
+          <div class="kpi-k">Líneas activas</div>
+          <div class="kpi-v">{{ number_format($stats['active_lines']) }}</div>
+          <div class="spark-wrap" data-spark="[10,12,15,19,17,21,23]"></div>
         </div>
-        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur shadow-sm">
-          <div class="text-xs/5 opacity-80">Saldo SIPAB</div>
-          <div class="mt-1 text-xl font-semibold tracking-tight">${{ number_format($stats['sipab_balance']) }}</div>
+        <div class="kpi kpi-glass">
+          <div class="kpi-k">Saldo SIPAB</div>
+          <div class="kpi-v">${{ number_format($stats['sipab_balance']) }}</div>
+          <div class="spark-wrap" data-spark="[3,4,4,6,8,7,9]"></div>
         </div>
       </div>
     </div>
   </div>
 
-  {{-- Cuerpo --}}
-  <div class="p-6">
-    {{-- Barra de filtros sticky --}}
-    <div class="sticky top-4 z-10">
-      <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET"
-            class="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-        <div>
-          <label class="block text-[11px] font-medium text-slate-500 mb-1">Desde</label>
-          <input type="date" name="from" value="{{ request('from') }}"
-                 class="h-10 w-44 rounded-lg border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-inner focus:border-[#8a51d3] focus:ring-[#8a51d3]">
-        </div>
-        <div>
-          <label class="block text-[11px] font-medium text-slate-500 mb-1">Hasta</label>
-          <input type="date" name="to" value="{{ request('to') }}"
-                 class="h-10 w-44 rounded-lg border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-inner focus:border-[#8a51d3] focus:ring-[#8a51d3]">
-        </div>
-
-        <button type="submit"
-                class="inline-flex h-10 items-center gap-2 rounded-lg bg-gradient-to-r from-[#419cf6] to-[#844ff0] px-4 text-sm font-semibold text-white shadow hover:opacity-95 active:scale-[.98] transition">
-          <i class="fas fa-filter"></i> Aplicar
-        </button>
-
-        <div class="ml-auto flex items-center gap-2">
-          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 active:scale-[.98] transition"
-             href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-            <i class="fas fa-file-excel text-emerald-500"></i> Excel
-          </a>
-          <a class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 active:scale-[.98] transition"
-             target="_blank"
-             href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
-            <i class="fas fa-file-pdf text-rose-500"></i> PDF
-          </a>
-        </div>
-      </form>
-    </div>
-
-    {{-- Acciones --}}
-    <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-      <a href="{{ $r('comisiones.index') }}"
-         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
-        <div class="flex items-center gap-2 text-slate-900 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
-            <i class="fas fa-wallet"></i>
-          </span>
-          Comisiones
-        </div>
-        <div class="mt-1 text-sm text-slate-500">Historial y estado</div>
-      </a>
-
-      <button type="button" data-open="#modal-calc"
-              class="group rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
-        <div class="flex items-center gap-2 text-slate-900 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
-            <i class="fas fa-calculator"></i>
-          </span>
-          Calculadora
-        </div>
-        <div class="mt-1 text-sm text-slate-500">Estimador de residuales</div>
-      </button>
-
-      <a href="{{ $r('lineas.index') }}"
-         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
-        <div class="flex items-center gap-2 text-slate-900 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
-            <i class="fas fa-sim-card"></i>
-          </span>
-          Mis líneas
-        </div>
-        <div class="mt-1 text-sm text-slate-500">Activas / preactivadas</div>
-      </a>
-
-      <a href="{{ $r('reports.index') }}"
-         class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition hover:-translate-y-[2px]">
-        <div class="flex items-center gap-2 text-slate-900 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
-            <i class="fas fa-chart-pie"></i>
-          </span>
-          Reportes
-        </div>
-        <div class="mt-1 text-sm text-slate-500">Excel / PDF</div>
-      </a>
-    </div>
-
-    {{-- Preview de últimos movimientos --}}
-    @php
-      $preview = $preview ?? collect([
-        (object)['fecha'=>now()->subDays(1),'concepto'=>'Activación','plan'=>'Básico','monto'=>50,'estado'=>'pagado'],
-        (object)['fecha'=>now()->subDays(2),'concepto'=>'Recarga','plan'=>'Ideal','monto'=>199*0.08,'estado'=>'pagado'],
-        (object)['fecha'=>now()->subDays(3),'concepto'=>'Portabilidad','plan'=>'Poderoso','monto'=>95+30,'estado'=>'pendiente'],
-      ]);
-    @endphp
-
-    <div class="mt-8">
-      <div class="flex items-center justify-between">
-        <h4 class="text-base font-semibold text-slate-900">Resumen rápido</h4>
-        <a href="{{ $r('comisiones.index') }}" class="text-sm font-medium text-[#6a4df7] hover:underline">Ver todo →</a>
+  {{-- Barra de filtros + acciones rápidas --}}
+  <div class="px-6 pt-6">
+    <form id="filtrosGestion" action="{{ request()->url() }}#gestion" method="GET"
+          class="gst-filters__inner">
+      <div>
+        <label class="block text-[11px] font-medium text-slate-500 mb-1">Desde</label>
+        <input type="date" name="from" value="{{ request('from') }}"
+               class="inpt w-44 focus:border-[#8a51d3] focus:ring-[#8a51d3]">
+      </div>
+      <div>
+        <label class="block text-[11px] font-medium text-slate-500 mb-1">Hasta</label>
+        <input type="date" name="to" value="{{ request('to') }}"
+               class="inpt w-44 focus:border-[#8a51d3] focus:ring-[#8a51d3]">
       </div>
 
-      <div class="mt-3 overflow-x-auto rounded-xl border border-slate-200">
-        <table class="min-w-full text-sm">
-          <thead class="bg-slate-50/80 text-slate-600">
-            <tr>
-              <th class="px-4 py-3 text-left font-semibold">Fecha</th>
-              <th class="px-4 py-3 text-left font-semibold">Concepto</th>
-              <th class="px-4 py-3 text-left font-semibold">Plan</th>
-              <th class="px-4 py-3 text-right font-semibold">Monto</th>
-              <th class="px-4 py-3 text-right font-semibold">Estado</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            @forelse($preview as $m)
+      {{-- Rangos rápidos --}}
+      <div class="flex items-center gap-2">
+        @php
+          $base = request()->except(['from','to']);
+          $q = fn($f,$t)=>array_filter(['from'=>$f,'to'=>$t] + $base);
+        @endphp
+        <a href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(), $q(now()->startOfMonth()->toDateString(), now()->toDateString())) }}#gestion"
+           class="chip chip-ghost">Este mes</a>
+        <a href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(), $q(now()->subDays(7)->toDateString(), now()->toDateString())) }}#gestion"
+           class="chip chip-ghost">Últimos 7 días</a>
+        <a href="{{ route(\Illuminate\Support\Facades\Route::currentRouteName(), $q(now()->subDays(30)->toDateString(), now()->toDateString())) }}#gestion"
+           class="chip chip-ghost">Últimos 30 días</a>
+      </div>
+
+      <div class="ml-auto flex items-center gap-2">
+        <button type="submit" class="btn-primary h-10 px-4"><i class="fas fa-filter"></i> Aplicar</button>
+        <a class="btn-soft h-10 px-3"
+           href="{{ $r('reports.export') !== '#' ? route('reports.export', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+          <i class="fas fa-file-excel text-emerald-500"></i> Excel
+        </a>
+        <a class="btn-soft h-10 px-3" target="_blank"
+           href="{{ $r('reports.pdf') !== '#' ? route('reports.pdf', array_filter(['from'=>request('from'),'to'=>request('to')])) : '#' }}">
+          <i class="fas fa-file-pdf text-rose-500"></i> PDF
+        </a>
+      </div>
+    </form>
+  </div>
+
+  {{-- Contenido con layout de 2 columnas --}}
+  <div class="p-6 grid lg:grid-cols-12 gap-6">
+
+    {{-- Columna lateral: estado hoy + acciones rápidas --}}
+    <aside class="lg:col-span-4 space-y-4">
+      <div class="card p-4 atile">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-slate-900 font-semibold">Estado de hoy</div>
+            <p class="text-sm text-slate-500">Actividad consolidada</p>
+          </div>
+          <span class="pill">Hoy {{ now()->format('d/m') }}</span>
+        </div>
+
+        <ul class="mt-4 space-y-3">
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Activaciones</span>
+            <span class="font-semibold text-slate-900">+3</span>
+          </li>
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Portabilidades</span>
+            <span class="font-semibold text-slate-900">+1</span>
+          </li>
+          <li class="flex items-center justify-between">
+            <span class="text-slate-600">Recargas</span>
+            <span class="font-semibold text-slate-900">+18</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <a href="{{ $r('lineas.create') }}"
+           class="group card p-4 atile hover:-translate-y-[2px] transition">
+          <div class="flex items-center gap-2 text-slate-900 font-semibold">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+              <i class="fas fa-bolt"></i>
+            </span>
+            Activar línea
+          </div>
+          <div class="mt-1 text-sm text-slate-500">Alta inmediata</div>
+        </a>
+
+        <a href="{{ $r('portabilidades.create') }}"
+           class="group card p-4 atile hover:-translate-y-[2px] transition">
+          <div class="flex items-center gap-2 text-slate-900 font-semibold">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+              <i class="fas fa-exchange-alt"></i>
+            </span>
+            Portabilidad
+          </div>
+          <div class="mt-1 text-sm text-slate-500">Conserva su número</div>
+        </a>
+      </div>
+
+      {{-- Recarga rápida (WhatsApp o flujo interno) --}}
+      <div class="card p-4">
+        <div class="flex items-center justify-between">
+          <div class="text-slate-900 font-semibold">Recarga rápida</div>
+          <span class="pill">8% comisión</span>
+        </div>
+        <form class="mt-3 grid grid-cols-2 gap-2" onsubmit="return BM_UI.quickTopup(this)">
+          <input type="tel" name="msisdn" placeholder="Teléfono" class="inpt col-span-2" required>
+          <select name="monto" class="inpt" required>
+            <option value="99">$99</option>
+            <option value="199">$199</option>
+            <option value="239">$239</option>
+          </select>
+          <button class="btn-primary h-10">Recargar</button>
+        </form>
+        <p class="mt-2 text-xs text-slate-500">Puedes ajustar la integración a tu endpoint cuando lo tengas listo.</p>
+      </div>
+    </aside>
+
+    {{-- Columna principal: tabs dinámicos --}}
+    <div class="lg:col-span-8 space-y-6">
+
+      {{-- Panel: Resumen --}}
+      <div class="gst-panel" data-panel="resumen">
+        <div class="card p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-slate-900 font-semibold">Resumen rápido</div>
+            <div class="flex items-center gap-2">
+              <button class="chip chip-ghost" data-switch="tabla" aria-pressed="true">Tabla</button>
+              <button class="chip chip-ghost" data-switch="cards">Tarjetas</button>
+            </div>
+          </div>
+
+          {{-- Tabla --}}
+          <div class="mt-3 overflow-x-auto rounded-xl border border-slate-200 view-table">
+            <table class="min-w-full text-sm" id="gstTable">
+              <thead class="bg-slate-50/80 text-slate-600">
+                <tr>
+                  <th class="th-sort px-4 py-3 text-left font-semibold" data-sort="date">Fecha</th>
+                  <th class="px-4 py-3 text-left font-semibold">Concepto</th>
+                  <th class="px-4 py-3 text-left font-semibold">Plan</th>
+                  <th class="th-sort px-4 py-3 text-right font-semibold" data-sort="amount">Monto</th>
+                  <th class="px-4 py-3 text-right font-semibold">Estado</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100" id="gstBody">
+                @forelse($preview as $m)
+                  @php
+                    $state = strtolower($m->estado);
+                    $pill = $state === 'pagado' ? 'pill-ok' : ($state === 'pendiente' ? 'pill-warn' : 'pill-muted');
+                  @endphp
+                  <tr class="hover:bg-slate-50/60">
+                    <td class="px-4 py-3 text-slate-700" data-date="{{ \Carbon\Carbon::parse($m->fecha)->format('Y-m-d') }}">
+                      {{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}
+                    </td>
+                    <td class="px-4 py-3 text-slate-700">{{ $m->concepto }}</td>
+                    <td class="px-4 py-3 text-slate-700">{{ $m->plan }}</td>
+                    <td class="px-4 py-3 text-right font-semibold text-slate-900" data-amount="{{ number_format($m->monto,2,'.','') }}">
+                      ${{ number_format($m->monto,2) }}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 {{ $pill }}">
+                        <i class="fas {{ $state==='pagado' ? 'fa-check-circle' : ($state==='pendiente' ? 'fa-clock' : 'fa-minus-circle') }}"></i>
+                        {{ ucfirst($m->estado) }}
+                      </span>
+                    </td>
+                  </tr>
+                @empty
+                  <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td></tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+
+          {{-- Tarjetas --}}
+          <div class="mt-3 hidden view-cards grid md:grid-cols-2 gap-3" id="gstCards">
+            @foreach($preview as $m)
               @php
                 $state = strtolower($m->estado);
                 $pill = $state === 'pagado' ? 'pill-ok' : ($state === 'pendiente' ? 'pill-warn' : 'pill-muted');
               @endphp
-              <tr class="hover:bg-slate-50/60">
-                <td class="px-4 py-3 text-slate-700">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</td>
-                <td class="px-4 py-3 text-slate-700">{{ $m->concepto }}</td>
-                <td class="px-4 py-3 text-slate-700">{{ $m->plan }}</td>
-                <td class="px-4 py-3 text-right font-semibold text-slate-900">${{ number_format($m->monto,2) }}</td>
-                <td class="px-4 py-3 text-right">
-                  <span class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 {{ $pill }}">
-                    <i class="fas {{ $state==='pagado' ? 'fa-check-circle' : ($state==='pendiente' ? 'fa-clock' : 'fa-minus-circle') }}"></i>
-                    {{ ucfirst($m->estado) }}
-                  </span>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="5" class="px-4 py-6 text-center text-slate-500">Sin movimientos en el rango seleccionado.</td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
+              <div class="card p-4">
+                <div class="text-sm text-slate-500">{{ \Carbon\Carbon::parse($m->fecha)->format('d/m/Y') }}</div>
+                <div class="mt-1 font-semibold text-slate-900">{{ $m->concepto }} · {{ $m->plan }}</div>
+                <div class="mt-1 text-lg font-extrabold text-slate-900">${{ number_format($m->monto,2) }}</div>
+                <div class="mt-2"><span class="pill {{ $pill }}">{{ ucfirst($m->estado) }}</span></div>
+              </div>
+            @endforeach
+          </div>
+        </div>
       </div>
+
+      {{-- Panel: Operaciones (links directos) --}}
+      <div class="gst-panel hidden" data-panel="operaciones">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <a href="{{ $r('lineas.index') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-sim-card"></i>
+              </span>
+              Mis líneas
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Activas / preactivadas</div>
+          </a>
+
+          <a href="{{ $r('reports.index') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-chart-pie"></i>
+              </span>
+              Reportes
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Excel / PDF</div>
+          </a>
+
+          <a href="{{ $r('store') }}" class="group card p-5 atile hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-box-open"></i>
+              </span>
+              Comprar SIMs
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Stock y kits</div>
+          </a>
+
+          <button type="button" data-open="#modal-calc"
+                  class="group card p-5 atile text-left hover:-translate-y-[2px] transition">
+            <div class="flex items-center gap-2 text-slate-900 font-semibold">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-[#f0eaff] group-hover:text-[#7c4dff] transition">
+                <i class="fas fa-calculator"></i>
+              </span>
+              Calculadora
+            </div>
+            <div class="mt-1 text-sm text-slate-500">Estimador de residuales</div>
+          </button>
+        </div>
+      </div>
+
+      {{-- Panel: Comisiones (atajo listado) --}}
+      <div class="gst-panel hidden" data-panel="comisiones">
+        <div class="card p-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-slate-900 font-semibold">Comisiones</div>
+              <p class="text-sm text-slate-500">Histórico y estado de pago</p>
+            </div>
+            <a href="{{ $r('comisiones.index') }}" class="btn-primary h-10">Abrir listado</a>
+          </div>
+          <div class="mt-4 text-sm text-slate-600">
+            Visualiza las comisiones por activación, residuales por recarga y bonos por portabilidad.
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -856,6 +979,36 @@
     .res-panel .stat-k{color:#cbd5e1}
     .res-panel .stat-v{color:#fff}
     .glow{box-shadow:0 15px 40px rgba(65,156,246,.18),0 10px 26px rgba(132,79,240,.16)}
+  
+  /* Tabs del header de Gestión */
+.gst-tab{
+  @apply inline-flex items-center h-9 px-3 rounded-full text-sm font-semibold text-white/90;
+  border:1px solid rgba(255,255,255,.25);
+  background:transparent; transition:.2s;
+}
+.gst-tab.is-active{ background:rgba(255,255,255,.18); }
+
+/* KPIs glass + sparkline */
+.kpi-glass{ border:1px solid rgba(255,255,255,.25); border-radius:1rem; padding:.9rem 1rem; background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08)); backdrop-filter:blur(8px); }
+.spark-wrap svg{ width:100%; height:26px; display:block; }
+
+/* Chips */
+.chip-ghost{ border-color:rgba(15,23,42,.12); background:#fff; }
+.chip-ghost:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,.08); }
+
+/* Vistas intercambiables */
+.view-table{ display:block; }
+.view-cards{ display:none; }
+.view-table.is-hidden{ display:none; }
+.view-cards.is-visible{ display:grid; }
+
+/* Cabeceras de tabla ordenable */
+.th-sort{ cursor:pointer; }
+.th-sort::after{ content:" ⇅"; color:#94a3b8; font-weight:400; }
+
+/* Utilidades */
+.pill{ padding:.25rem .6rem; border-radius:9999px; border:1px solid var(--bd); background:#fff; font-weight:700; font-size:.78rem }
+
   </style>
 
   {{-- ======= SCRIPTS ======= --}}
@@ -1139,6 +1292,103 @@
 
       render();
     })(document.getElementById('calc-ganancias'));
+
+    // ===== Tabs de Gestión =====
+  (function(){
+    const tabs = document.querySelectorAll('.gst-tab');
+    const panels = document.querySelectorAll('.gst-panel');
+    tabs.forEach(t=>{
+      t.addEventListener('click', ()=>{
+        tabs.forEach(x=>x.classList.remove('is-active'));
+        t.classList.add('is-active');
+        const name = t.dataset.tab;
+        panels.forEach(p=> p.classList.toggle('hidden', p.dataset.panel !== name));
+      });
+    });
+  })();
+
+  // ===== Vista Tabla / Tarjetas (Resumen) =====
+  (function(){
+    const btnTable = document.querySelector('[data-switch="tabla"]');
+    const btnCards = document.querySelector('[data-switch="cards"]');
+    const tableWrap = document.querySelector('.view-table');
+    const cardsWrap = document.querySelector('.view-cards');
+
+    function setView(mode){
+      const isTable = mode === 'tabla';
+      tableWrap.classList.toggle('is-hidden', !isTable);
+      cardsWrap.classList.toggle('is-visible', !isTable);
+      btnTable.setAttribute('aria-pressed', isTable ? 'true':'false');
+      btnCards.setAttribute('aria-pressed', !isTable ? 'true':'false');
+    }
+    btnTable?.addEventListener('click', ()=> setView('tabla'));
+    btnCards?.addEventListener('click', ()=> setView('cards'));
+  })();
+
+  // ===== Ordenación simple por fecha y monto =====
+  (function(){
+    const table = document.getElementById('gstTable');
+    if(!table) return;
+    const body = document.getElementById('gstBody');
+
+    function sortRows(by){
+      const rows = Array.from(body.querySelectorAll('tr'));
+      rows.sort((a,b)=>{
+        if(by==='date'){
+          return (a.querySelector('[data-date]').dataset.date > b.querySelector('[data-date]').dataset.date) ? -1 : 1;
+        }else{
+          const av = parseFloat(a.querySelector('[data-amount]').dataset.amount||'0');
+          const bv = parseFloat(b.querySelector('[data-amount]').dataset.amount||'0');
+          return bv - av;
+        }
+      });
+      body.innerHTML = '';
+      rows.forEach(r=> body.appendChild(r));
+    }
+
+    table.addEventListener('click', (e)=>{
+      const th = e.target.closest('.th-sort');
+      if(!th) return;
+      sortRows(th.dataset.sort);
+    });
+  })();
+
+  // ===== Micro sparklines (sin librerías) =====
+  (function(){
+    const wrapNodes = document.querySelectorAll('.spark-wrap');
+    wrapNodes.forEach(w=>{
+      const pts = (w.dataset.spark || '').replace(/[^0-9,.-]/g,'').split(',').map(Number).filter(n=>!isNaN(n));
+      if(!pts.length) return;
+      const W = w.clientWidth || 240, H = 26, p = 2;
+      const min = Math.min(...pts), max = Math.max(...pts);
+      const norm = v => (H - p) - ((v - min)/(max-min || 1))*(H - p*2);
+      const step = (W - p*2) / (pts.length-1 || 1);
+      let d = '';
+      pts.forEach((v,i)=>{ const x = p + i*step; const y = norm(v); d += (i? ' L':'M') + x + ' ' + y; });
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.innerHTML = `
+        <polyline points="" fill="none" stroke="url(#g)" stroke-width="2"/>
+        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs>
+        <path d="${d}" fill="none" stroke="white" stroke-opacity=".9" stroke-width="2" />
+      `;
+      w.innerHTML = '';
+      w.appendChild(svg);
+    });
+  })();
+
+  // ===== Recarga rápida (adaptable a WhatsApp por ahora) =====
+  window.BM_UI = window.BM_UI || {};
+  BM_UI.quickTopup = function(form){
+    const msisdn = form.msisdn.value.trim();
+    const monto  = form.monto.value;
+    if(!msisdn || !monto) return false;
+    const msg = `Hola, quiero recargar ${monto} a ${msisdn}`;
+    const wa = document.getElementById('cartRoot')?.dataset?.wa || '{{ $waNumber }}';
+    const url = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+    return false;
+  };
   </script>
 
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
