@@ -145,134 +145,179 @@
         {{-- Panel: Movilidad --}}
         <div class="pk-panel mt-10 grid md:grid-cols-3 gap-6" data-panel="movilidad">
           {{-- KIT 1 --}}
-          <article class="pk-card">
-            <span class="pk-card__border"></span>
-            <div class="relative z-[1] p-6">
-              <div class="flex items-center justify-between">
-                <h4 class="text-lg font-semibold text-slate-900">KIT 1 – Emprende</h4>
-                <span class="pk-badge">Inicio</span>
-              </div>
+<article class="pk-card">
+  <span class="pk-card__border"></span>
+  <div class="relative z-[1] p-6">
+    <div class="flex items-center justify-between">
+      <h4 class="text-lg font-semibold text-slate-900">KIT 1 – Emprende</h4>
+      <span class="pk-badge">Inicio</span>
+    </div>
 
-              <div class="mt-3 flex items-end gap-1">
-                <span class="text-2xl font-extrabold text-slate-900">$250</span>
-                <span class="text-slate-500 text-sm">MXN</span>
-              </div>
+    <div class="mt-3 flex items-end gap-1">
+      <span class="text-2xl font-extrabold text-slate-900">$250</span>
+      <span class="text-slate-500 text-sm">MXN</span>
+    </div>
 
-              <ul class="mt-4 space-y-2 text-sm text-slate-700">
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  10 SIMs (1 con recarga gratis, 9 en blanco)
-                </li>
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  Publicidad gratuita y envío sin costo
-                </li>
-              </ul>
+    <ul class="mt-4 space-y-2 text-sm text-slate-700">
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/>
+        </svg>
+        10 SIMs (1 con recarga gratis, 9 en blanco)
+      </li>
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/>
+        </svg>
+        Publicidad gratuita y envío sin costo
+      </li>
+    </ul>
 
-              <div class="mt-6 flex gap-2">
-                <button class="pk-btn-cta js-add-cart"
-                        data-sku="KIT1" data-title="KIT 1 – Emprende" data-price="250">
-                  Agregar al carrito
-                </button>
-                <a href="{{ $r('store') }}" class="btn-soft">Ir a la tienda</a>
-              </div>
-            </div>
-          </article>
+    {{-- Botón "Comprar" destacado (POST a cart.add) --}}
+    @php
+      $cartCount = optional(
+        \App\Models\Cart::withCount('items')
+          ->where('user_id', auth()->id())
+          ->where('status','open')
+          ->first()
+      )->items_count ?? 0;
+    @endphp
+
+    <form action="{{ route('cart.add') }}" method="POST" class="inline-block mt-6">
+  @csrf
+  <input type="hidden" name="sku" value="KIT1">
+  <input type="hidden" name="title" value="KIT 1 – Emprende">
+  <input type="hidden" name="price" value="250">
+  <input type="hidden" name="qty" value="1">
+  <button type="submit"
+    class="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-extrabold"
+    aria-label="Agregar y ver carrito">
+    <i class="fas fa-shopping-cart"></i>
+    <span>Comprar</span>
+  </button>
+</form>
+  </div>
+</article>
 
           {{-- KIT 2 --}}
-          <article class="pk-card pk-card--featured">
-            <span class="pk-card__border"></span>
-            <span class="pk-ribbon">Más popular</span>
-            <div class="relative z-[1] p-6">
-              <div class="flex items-center justify-between">
-                <h4 class="text-lg font-semibold text-slate-900">KIT 2 – Avanza</h4>
-                <span class="pk-badge">Crecimiento</span>
-              </div>
+<article class="pk-card pk-card--featured">
+  <span class="pk-card__border"></span>
+  <span class="pk-ribbon">Más popular</span>
+  <div class="relative z-[1] p-6">
+    <div class="flex items-center justify-between">
+      <h4 class="text-lg font-semibold text-slate-900">KIT 2 – Avanza</h4>
+      <span class="pk-badge">Crecimiento</span>
+    </div>
 
-              <div class="mt-3 flex items-end gap-1">
-                <span class="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">$495</span>
-                <span class="text-slate-500 text-sm">MXN</span>
-              </div>
+    <div class="mt-3 flex items-end gap-1">
+      <span class="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">$495</span>
+      <span class="text-slate-500 text-sm">MXN</span>
+    </div>
 
-              <ul class="mt-4 space-y-2 text-sm text-slate-700">
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  10 SIMs pre-activadas
-                </li>
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  50% de descuento en cada plan
-                </li>
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  Publicidad gratuita y envío sin costo
-                </li>
-              </ul>
+    <ul class="mt-4 space-y-2 text-sm text-slate-700">
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        10 SIMs pre-activadas
+      </li>
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        50% de descuento en cada plan
+      </li>
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        Publicidad gratuita y envío sin costo
+      </li>
+    </ul>
 
-{{-- Botón "Comprar" destacado --}}
-@php
-  $cartCount = optional(
-    \App\Models\Cart::withCount('items')
-      ->where('user_id', auth()->id())
-      ->where('status','open')
-      ->first()
-  )->items_count ?? 0;
-@endphp
+    {{-- Botón "Comprar" destacado (POST a cart.add) --}}
+    @php
+      $cartCount = optional(
+        \App\Models\Cart::withCount('items')
+          ->where('user_id', auth()->id())
+          ->where('status','open')
+          ->first()
+      )->items_count ?? 0;
+    @endphp
 
-<a href="{{ route('cart.index') }}"
-   class="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-extrabold"
-   aria-label="Ir al carrito">
-  <i class="fas fa-shopping-cart"></i>
-  <span>Comprar</span>
-  <span id="cartCount"
-        class="ml-1 inline-grid min-w-[20px] place-items-center rounded-full bg-white/90 px-1 text-[11px] font-black text-slate-900">
-    {{ $cartCount }}
-  </span>
-</a>
-        
-              </div>
-            </div>
-          </article>
+    <form action="{{ route('cart.add') }}" method="POST" class="inline-block mt-6">
+      @csrf
+      <input type="hidden" name="sku" value="KIT2">
+      <input type="hidden" name="title" value="KIT 2 – Avanza">
+      <input type="hidden" name="price" value="495">
+      <input type="hidden" name="qty" value="1">
+      <button type="submit"
+        class="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-extrabold"
+        aria-label="Agregar y ver carrito">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Comprar</span>
+        <span id="cartCount"
+          class="ml-1 inline-grid min-w-[20px] place-items-center rounded-full bg-white/90 px-1 text-[11px] font-black text-slate-900">
+          {{ $cartCount }}
+        </span>
+      </button>
+    </form>
+  </div>
+</article>
 
           {{-- KIT 3 --}}
-          <article class="pk-card">
-            <span class="pk-card__border"></span>
-            <div class="relative z-[1] p-6">
-              <div class="flex items-center justify-between">
-                <h4 class="text-lg font-semibold text-slate-900">KIT 3 – Distribuidor Profesional</h4>
-                <span class="pk-badge">Pro</span>
-              </div>
+<article class="pk-card">
+  <span class="pk-card__border"></span>
+  <div class="relative z-[1] p-6">
+    <div class="flex items-center justify-between">
+      <h4 class="text-lg font-semibold text-slate-900">KIT 3 – Distribuidor Profesional</h4>
+      <span class="pk-badge">Pro</span>
+    </div>
 
-              <div class="mt-3 flex items-end gap-1">
-                <span class="text-2xl font-extrabold text-slate-900">$6600</span>
-                <span class="text-slate-500 text-sm">MXN</span>
-              </div>
+    <div class="mt-3 flex items-end gap-1">
+      <span class="text-2xl font-extrabold text-slate-900">$6600</span>
+      <span class="text-slate-500 text-sm">MXN</span>
+    </div>
 
-              <ul class="mt-4 space-y-2 text-sm text-slate-700">
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  50 SIMs preactivadas con Plan Ideal Ilimitado
-                </li>
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  Publicidad gratuita y envío sin costo
-                </li>
-                <li class="flex items-start gap-2">
-                  <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-                  8% en recargas + 5% residual
-                </li>
-              </ul>
+    <ul class="mt-4 space-y-2 text-sm text-slate-700">
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        50 SIMs preactivadas con Plan Ideal Ilimitado
+      </li>
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        Publicidad gratuita y envío sin costo
+      </li>
+      <li class="flex items-start gap-2">
+        <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
+        8% en recargas + 5% residual
+      </li>
+    </ul>
 
-              <div class="mt-6 flex gap-2">
-                <button class="pk-btn-cta js-add-cart"
-                        data-sku="KIT3" data-title="KIT 3 – Profesional" data-price="6600">
-                  Agregar al carrito
-                </button>
-                <a href="{{ $r('store') }}" class="btn-soft">Ir a la tienda</a>
-              </div>
-            </div>
-          </article>
-        </div>
+    {{-- Botón "Comprar" destacado (POST a cart.add) --}}
+    @php
+      $cartCount = optional(
+        \App\Models\Cart::withCount('items')
+          ->where('user_id', auth()->id())
+          ->where('status','open')
+          ->first()
+      )->items_count ?? 0;
+    @endphp
+
+    <form action="{{ route('cart.add') }}" method="POST" class="inline-block mt-6">
+      @csrf
+      <input type="hidden" name="sku" value="KIT3">
+      <input type="hidden" name="title" value="KIT 3 – Distribuidor Profesional">
+      <input type="hidden" name="price" value="6600">
+      <input type="hidden" name="qty" value="1">
+      <button type="submit"
+        class="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-extrabold"
+        aria-label="Agregar y ver carrito">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Comprar</span>
+        <span id="cartCount"
+          class="ml-1 inline-grid min-w-[20px] place-items-center rounded-full bg-white/90 px-1 text-[11px] font-black text-slate-900">
+          {{ $cartCount }}
+        </span>
+      </button>
+    </form>
+  </div>
+</article>
+
 
         {{-- Paneles eSIM & MiFi --}}
         <div class="pk-panel mt-10 grid md:grid-cols-3 gap-6 hidden" data-panel="esim">

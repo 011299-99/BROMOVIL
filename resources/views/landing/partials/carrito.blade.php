@@ -1,6 +1,7 @@
 {{-- resources/views/landing/partials/carrito.blade.php --}}
 <x-app-layout>
   <x-slot name="header">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="mx-auto max-w-7xl px-6">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
@@ -18,9 +19,7 @@
 
   <section class="py-10 bg-slate-50">
     <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-3 gap-6">
-      {{-- Columna izquierda: Items --}}
       <div class="lg:col-span-2">
-        {{-- Mensajes --}}
         @if(session('success'))
           <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
             {{ session('success') }}
@@ -32,7 +31,6 @@
           </div>
         @endif
 
-        {{-- Tabla --}}
         <div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
           <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <h3 class="text-base font-semibold text-slate-900">Tus productos</h3>
@@ -89,7 +87,7 @@
                       </td>
 
                       <td class="px-4 py-4 text-right font-semibold text-slate-900">
-                        ${{ number_format($item->price * $item->qty, 2) }} MXN
+                        ${{ number_format($item->subtotal, 2) }} MXN
                       </td>
 
                       <td class="px-4 py-4">
@@ -112,7 +110,6 @@
         </div>
       </div>
 
-      {{-- Columna derecha: Resumen --}}
       <aside class="lg:col-span-1">
         <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
           <h3 class="text-base font-semibold text-slate-900">Resumen</h3>
@@ -121,21 +118,15 @@
             <div class="flex items-center justify-between">
               <dt class="text-slate-600">Subtotal</dt>
               <dd class="font-semibold text-slate-900">
-                ${{ number_format($subtotal ?? $total ?? 0, 2) }} MXN
+                ${{ number_format($subtotal ?? 0, 2) }} MXN
               </dd>
             </div>
-
-            {{-- Si manejas envío/impuestos, puedes mostrarlos aquí --}}
-            {{-- <div class="flex items-center justify-between">
-              <dt class="text-slate-600">Envío</dt>
-              <dd class="text-slate-900">$0.00 MXN</dd>
-            </div> --}}
           </dl>
 
           <div class="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-sm">
             <span class="text-slate-600">Total</span>
             <span class="text-xl font-extrabold text-slate-900">
-              ${{ number_format($total ?? $subtotal ?? 0, 2) }} MXN
+              ${{ number_format($total ?? 0, 2) }} MXN
             </span>
           </div>
 
@@ -150,12 +141,6 @@
           <a href="{{ route('store') }}" class="mt-3 w-full inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold border border-slate-200 hover:bg-slate-50">
             Seguir comprando
           </a>
-        </div>
-
-        {{-- Ayuda / WhatsApp opcional --}}
-        <div class="mt-4 text-center text-sm text-slate-600">
-          ¿Necesitas ayuda? Escríbenos por
-          <a href="https://wa.me/525568278695?text={{ rawurlencode('Hola, tengo dudas sobre mi compra.') }}" class="font-semibold text-emerald-600 hover:underline">WhatsApp</a>.
         </div>
       </aside>
     </div>
