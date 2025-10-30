@@ -38,7 +38,7 @@ class CartController extends Controller
      */
     public function add(Request $request)
     {
-        // 👇 Validamos lo que realmente mandas desde el form
+    
         $data = $request->validate([
             'sku'   => ['required', 'string', 'max:100'],
             'title' => ['required', 'string', 'max:255'],
