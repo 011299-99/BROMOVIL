@@ -50,7 +50,8 @@
             </li>
           </ul>
 
-          <a href="#form-distribuidor" class="btn-cta mt-6">¡Quiero Emprender!</a>
+          <a href="distribuidor/solicitud" data-scroll="distribuidor/solicitud" class="btn-cta mt-6">¡Quiero Emprender!</a>
+
         </div>
       </article>
 
@@ -84,7 +85,7 @@
             </li>
           </ul>
 
-          <a href="#form-distribuidor" class="btn-cta btn-cta--glow mt-6">¡Quiero Avanzar!</a>
+          <a href="distribuidor/solicitud" class="btn-cta btn-cta--glow mt-6">¡Quiero Avanzar!</a>
         </div>
       </article>
 
@@ -121,7 +122,7 @@
             </li>
           </ul>
 
-          <a href="#form-distribuidor" class="btn-cta mt-6">¡Quiero ser Profesional!</a>
+          <a href="distribuidor/solicitud" class="btn-cta mt-6">¡Quiero ser Profesional!</a>
         </div>
       </article>
     </div>
@@ -149,7 +150,7 @@
             </li>
             @endforeach
           </ul>
-          <a href="#form-distribuidor" class="btn-cta mt-6">Seleccionar</a>
+          <a href="distribuidor/solicitud" class="btn-cta mt-6">Seleccionar</a>
         </div>
       </article>
       @endforeach
@@ -178,7 +179,7 @@
             </li>
             @endforeach
           </ul>
-          <a href="#form-distribuidor" class="btn-cta mt-6">Seleccionar</a>
+          <a href="distribuidor/solicitud" class="btn-cta mt-6">Seleccionar</a>
         </div>
       </article>
       @endforeach
