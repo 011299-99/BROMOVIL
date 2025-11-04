@@ -78,12 +78,6 @@
     'waMsg'    => $waMsg,
   ])
 
-  {{-- CARRITO FLOTANTE --}}
-  @include('dashboard.partials.cart-drawer', [
-    'waNumber' => $waNumber,
-    'r'        => $r,
-  ])
-
   {{-- ESTILOS --}}
   @include('dashboard.partials.styles')
 

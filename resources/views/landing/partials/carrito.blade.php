@@ -10,9 +10,7 @@
             <span class="text-lg md:text-xl font-semibold text-slate-800">Carrito</span>
           </a>
         </div>
-        <div class="hidden md:flex items-center gap-2">
-          <a href="{{ route('store') }}" class="px-3 py-2 rounded-lg border border-slate-200 text-sm font-semibold hover:bg-slate-50">Seguir comprando</a>
-        </div>
+        {{-- Botón "Seguir comprando" eliminado del header --}}
       </div>
     </div>
   </x-slot>
@@ -47,7 +45,9 @@
           @if(($items ?? collect())->count() === 0)
             <div class="p-8 text-center text-slate-600">
               <p>Tu carrito está vacío.</p>
-              <a href="{{ route('store') }}" class="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl text-white font-semibold bg-gradient-to-r from-[#419cf6] to-[#844ff0] shadow-md hover:opacity-95">
+              {{-- Ir al dashboard en la sección #paquetes --}}
+              <a href="{{ route('dashboard') }}#paquetes"
+                 class="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl text-white font-semibold bg-gradient-to-r from-[#419cf6] to-[#844ff0] shadow-md hover:opacity-95">
                 Ir a la tienda →
               </a>
             </div>
@@ -76,11 +76,30 @@
                       </td>
 
                       <td class="px-4 py-4">
-                        <form method="POST" action="{{ route('cart.item.qty', $item->id) }}" class="flex items-center gap-2">
+                        {{-- Auto-submit del cambio de cantidad (debounce) --}}
+                        <form method="POST" action="{{ route('cart.item.qty', $item->id) }}" class="flex items-center gap-2 js-qty-form">
                           @csrf
                           @method('PATCH')
-                          <input type="number" name="qty" min="1" value="{{ $item->qty }}" class="w-20 rounded-lg border border-slate-200 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#419cf6]/30">
-                          <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50">
+
+                          <div class="flex items-center gap-2">
+                            {{-- Botón - (opcional) --}}
+                            <button type="button" class="px-2 h-8 rounded-lg border border-slate-200 text-slate-700 js-qty-dec">−</button>
+
+                            <input
+                              type="number"
+                              name="qty"
+                              min="1"
+                              value="{{ $item->qty }}"
+                              class="w-20 rounded-lg border border-slate-200 px-3 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-[#419cf6]/30 js-qty-input"
+                              inputmode="numeric"
+                            >
+
+                            {{-- Botón + (opcional) --}}
+                            <button type="button" class="px-2 h-8 rounded-lg border border-slate-200 text-slate-700 js-qty-inc">+</button>
+                          </div>
+
+                          {{-- Oculto: botón clásico (fallback) --}}
+                          <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 js-qty-submit" style="display:none">
                             Actualizar
                           </button>
                         </form>
@@ -138,11 +157,61 @@
             </button>
           </form>
 
-          <a href="{{ route('store') }}" class="mt-3 w-full inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold border border-slate-200 hover:bg-slate-50">
+          {{-- "Seguir comprando" -> dashboard#paquetes --}}
+          <a href="{{ route('dashboard') }}#paquetes"
+             class="mt-3 w-full inline-flex items-center justify-center rounded-xl px-4 py-3 font-semibold border border-slate-200 hover:bg-slate-50">
             Seguir comprando
           </a>
         </div>
       </aside>
     </div>
   </section>
+
+  {{-- Auto-submit qty (debounce) + botones +/- --}}
+  <script>
+    (function () {
+      const DEBOUNCE_MS = 450;
+
+      function debounce(fn, ms) {
+        let t;
+        return function (...args) {
+          clearTimeout(t);
+          t = setTimeout(() => fn.apply(this, args), ms);
+        };
+      }
+
+      document.querySelectorAll('.js-qty-form').forEach((form) => {
+        const input = form.querySelector('.js-qty-input');
+        const inc   = form.querySelector('.js-qty-inc');
+        const dec   = form.querySelector('.js-qty-dec');
+
+        const submitDebounced = debounce(() => {
+          const val = parseInt(input.value, 10);
+          if (!Number.isFinite(val) || val < 1) return;
+          form.submit();
+        }, DEBOUNCE_MS);
+
+        if (input) {
+          input.addEventListener('input', submitDebounced);
+          input.addEventListener('change', submitDebounced);
+        }
+
+        if (inc) {
+          inc.addEventListener('click', () => {
+            const val = Math.max(0, parseInt(input.value || '0', 10)) + 1;
+            input.value = val;
+            submitDebounced();
+          });
+        }
+
+        if (dec) {
+          dec.addEventListener('click', () => {
+            const val = Math.max(1, parseInt(input.value || '1', 10) - 1);
+            input.value = val;
+            submitDebounced();
+          });
+        }
+      });
+    })();
+  </script>
 </x-app-layout>

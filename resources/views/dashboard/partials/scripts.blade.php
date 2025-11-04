@@ -251,6 +251,36 @@
 
       render();
     })(document.getElementById('calc-ganancias'));
+
+    (function(){
+  const form = document.getElementById('filtrosGestion'); if(!form) return;
+  const from = form.querySelector('input[name="from"]');
+  const to   = form.querySelector('input[name="to"]');
+  const chips= form.querySelectorAll('.presets .chip[type="button"]');
+
+  const fmt = (d)=> d.toISOString().slice(0,10);
+  const today = new Date();
+
+  function setRange(kind){
+    chips.forEach(c=>c.classList.toggle('is-active', c.dataset.range===kind));
+    let d1=null,d2=null;
+    if(kind==='30'){
+      d2 = new Date(today); d1 = new Date(today); d1.setDate(d1.getDate()-30);
+    }else if(kind==='mes'){
+      d1 = new Date(today.getFullYear(), today.getMonth(), 1);
+      d2 = new Date(today.getFullYear(), today.getMonth()+1, 0);
+    }else if(kind==='anio'){
+      d1 = new Date(today.getFullYear(), 0, 1);
+      d2 = new Date(today.getFullYear(), 11, 31);
+    }else if(kind==='todo'){
+      d1 = ''; d2 = '';
+    }
+    from.value = d1? fmt(d1) : '';
+    to.value   = d2? fmt(d2) : '';
+  }
+
+  chips.forEach(c=>c.addEventListener('click', ()=> setRange(c.dataset.range)));
+})();
   </script>
 
   <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
