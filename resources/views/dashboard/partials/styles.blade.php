@@ -314,5 +314,59 @@
 /* Si actualizas el atributo style="--val:X%" desde tu JS cuando cambie #calc-in-sims
    se coloreará la pista acorde al valor. */
 
+
+/* ============================== */
+/* ====== TIENDA (cards) ======== */
+/* ============================== */
+
+/* Card base */
+.store-card{
+  position: relative; border-radius: 18px; background:#fff;
+  border:1px solid rgba(15,23,42,.08); box-shadow:0 6px 20px rgba(15,23,42,.06);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  overflow:hidden;
+}
+.store-card:hover{
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:0 18px 40px rgba(65,156,246,.14), 0 8px 24px rgba(132,79,240,.12);
+  border-color: rgba(65,156,246,.25);
+}
+
+/* Borde/glow dinámico */
+.store-card__border{
+  position:absolute; inset:0; pointer-events:none; border-radius:inherit; z-index:0;
+  background: conic-gradient(from 180deg at 50% 50%, #419cf6, #844ff0, #419cf6);
+  opacity:0; filter: blur(10px); transition: opacity .35s ease, filter .35s ease;
+}
+.store-card:hover .store-card__border{ opacity:.5; filter: blur(14px); }
+
+/* Imagen con zoom suave  */
+.store-img{
+  width: 100%; height: 220px;
+  object-fit: contain; object-position: center;
+  display: block; background: #f8fafc; padding: 6px;
+  transition: transform .5s ease, filter .35s ease;
+}
+.store-card:hover .store-img{ transform: scale(1.06); filter: contrast(1.02) }
+
+/* Badge */
+.store-badge{
+  position:absolute; top:12px; left:12px;
+  font-size:.72rem; font-weight:800; letter-spacing:.3px; color:#fff;
+  padding:.3rem .6rem; border-radius:9999px;
+  background: linear-gradient(135deg,#419cf6,#844ff0);
+  box-shadow: 0 8px 22px rgba(65,156,246,.22);
+}
+
+/* Botón CTA (consistente con marca) */
+.btn-cta-store{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.6rem .9rem; border-radius:9999px; font-weight:800; font-size:.9rem;
+  color:#fff; background-image:linear-gradient(135deg,#419cf6,#844ff0);
+  box-shadow:0 10px 22px rgba(65,156,246,.18);
+  transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+}
+.btn-cta-store:hover{ transform: translateY(-2px) scale(1.02); box-shadow:0 16px 34px rgba(65,156,246,.24); filter: brightness(1.03) }
 </style>
+
 

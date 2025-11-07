@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\DistributorDashboardController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaypalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,13 @@ Route::view('/bromovil', 'landing.bromovil')->name('bromovil');
 Route::view('/distribuidor/solicitud', 'landing.distribuidor')->name('distribuidor.form');
 Route::post('/distribuidor/aplicar', [DistributorController::class, 'apply'])->name('distribuidor.apply');
 Route::view('/distribuidor/gracias', 'landing.gracias')->name('distribuidor.gracias');
+
+/*
+rutas paypal
+*/
+Route::post('/paypal/create', [PaypalController::class, 'create'])->name('paypal.create');
+Route::get('/paypal/return', [PaypalController::class, 'return'])->name('paypal.return');
+Route::get('/paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
 
 /*
 |--------------------------------------------------------------------------

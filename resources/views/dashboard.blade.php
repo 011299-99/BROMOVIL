@@ -36,7 +36,7 @@
       return \Illuminate\Support\Facades\Route::has($name) ? route($name) : $fallback;
     };
 
-    // contador real de carrito (lo usabas varias veces en los kits)
+    // contador real de carrito
     $cartCount = optional(
       \App\Models\Cart::withCount('items')
         ->where('user_id', auth()->id())
@@ -63,12 +63,18 @@
       'r'          => $r,
       'cartCount'  => $cartCount,
     ])
+
+    {{-- === TIENDA (incluida como parcial) === --}}
+    @include('dashboard.partials.tienda')
+
     @include('dashboard.partials.sipab')
+
     @include('dashboard.partials.gestion', [
       'stats'   => $stats,
       'preview' => $preview,
       'r'       => $r,
     ])
+
     @include('dashboard.partials.soporte')
   </section>
 
