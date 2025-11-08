@@ -54,22 +54,24 @@
 
     {{-- Botón principal (CTA) --}}
     <a href="{{ route('distribuidor.form') }}"
-       class="reveal mt-12 inline-flex items-center justify-center
-              px-12 py-4 md:px-14 md:py-5
-              rounded-full gap-2
-              text-lg md:text-xl font-semibold text-white
-              shadow-xl
-              bg-gradient-to-r from-[#419cf6] to-[#844ff0]
-              relative overflow-hidden
-              transition-all duration-300 ease-out
-              hover:scale-[1.03] hover:shadow-[0_16px_40px_rgba(66,156,246,.3)]
-              focus:outline-none focus:ring-4 focus:ring-[#419cf6]/25">
-      <span class="relative z-[2] inline-flex items-center">
-        Quiero ser distribuidor
-        <svg class="ml-2 h-6 w-6 md:h-6 md:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg>
-      </span>
-      <span class="pointer-events-none absolute inset-0 z-[1] btn-shimmer"></span>
-    </a>
+   class="reveal mt-12 inline-flex items-center justify-center
+          px-12 py-4 md:px-14 md:py-5
+          rounded-full gap-2
+          text-lg md:text-xl font-semibold text-white
+          shadow-xl
+          bg-[#6200FF]
+          relative overflow-hidden
+          transition-all duration-300 ease-out
+          hover:scale-[1.03] hover:shadow-[0_16px_40px_rgba(98,0,255,.35)]
+          focus:outline-none focus:ring-4 focus:ring-[#6200FF]/30">
+  <span class="relative z-[2] inline-flex items-center">
+    Quiero ser distribuidor
+    <svg class="ml-2 h-6 w-6 md:h-6 md:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  </span>
+  <span class="pointer-events-none absolute inset-0 z-[1] btn-shimmer"></span>
+</a>
   </div>
 </section>
 

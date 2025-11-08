@@ -3,7 +3,7 @@
   <div class="max-w-7xl mx-auto px-6">
     {{-- Encabezado idéntico al mockup --}}
     <h2 class="text-3xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-slate-900">
-      <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">Por qué elegir</span>
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">¿Por qué elegir</span>
       <span> Bromovil sobre</span><br class="hidden md:block" />
       <span>otras compañías?</span>
     </h2>
