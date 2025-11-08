@@ -1,22 +1,15 @@
-{{-- resources/views/landing/beneficios.blade.php --}}
-<x-app-layout>
-  <style>nav.bg-white.border-b.border-gray-100{display:none!important}</style>
-  <x-slot name="header"></x-slot>
-
-  {{-- =============== SECCIÓN 2: BENEFICIOS (4 y 4, compacto y profesional) =============== --}}
-  <section id="por-que-bromovil" class="py-16 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-6">
-      {{-- Header --}}
-      <div class="text-center">
-        <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-medium
-                     bg-gradient-to-r from-[#419cf6]/10 to-[#844ff0]/10 text-[#334155] border border-slate-200">
-          <span class="inline-block w-1 h-1 rounded-full bg-gradient-to-r from-[#419cf6] to-[#844ff0]"></span>
-          Ventajas competitivas
-        </span>
-        <h2 class="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
-          ¿Por qué elegir <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">Bromovil</span>?
-        </h2>
-      </div>
+{{-- ================= SECCIÓN: ¿POR QUÉ ELEGIR BROMOVIL? ================= --}}
+<section id="por-que-bromovil" class="py-20 bg-slate-50">
+  <div class="max-w-7xl mx-auto px-6">
+    {{-- Encabezado idéntico al mockup --}}
+    <h2 class="text-3xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-slate-900">
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#419cf6] to-[#844ff0]">Por qué elegir</span>
+      <span> Bromovil sobre</span><br class="hidden md:block" />
+      <span>otras compañías?</span>
+    </h2>
+    <p class="mt-6 text-slate-500 text-base md:text-lg">
+      Beneficios diferenciales respaldados por soporte cercano y márgenes competitivos.
+    </p>
 
       @php
         // Mantén tus rutas/archivos de logos tal cual
