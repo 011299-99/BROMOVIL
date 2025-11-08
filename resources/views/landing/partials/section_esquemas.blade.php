@@ -7,19 +7,16 @@
         Elige el esquema que más se adapta a ti
       </h2>
       <p class="reveal mt-3 text-slate-600 max-w-3xl mx-auto">
-        Cada categoría ofrece soluciones distintas para iniciar, crecer o profesionalizar tu distribución.
       </p>
     </div>
 
     {{-- Tabs --}}
     <div class="reveal mt-8 flex flex-wrap justify-center gap-2">
-      <button type="button" class="tab-btn is-active" data-tab="movilidad" aria-selected="true">SIMs Movilidad</button>
+      <button type="button" class="tab-btn is-active" data-tab="movilidad" aria-selected="true">SIMs</button>
       <button type="button" class="tab-btn" data-tab="esim" aria-selected="false">eSIM</button>
-      <button type="button" class="tab-btn" data-tab="mifi" aria-selected="false">MiFi</button>
     </div>
 
     <p class="reveal mt-4 text-center text-slate-500 text-sm">
-      Selecciona una categoría para ver los kits disponibles.
     </p>
 
     {{-- ===== Panel: SIMs Movilidad (activo por defecto) ===== --}}
@@ -155,36 +152,6 @@
       </article>
       @endforeach
     </div>
-
-    {{-- ===== Panel: MiFi (placeholder) ===== --}}
-    <div class="tab-panel mt-10 grid md:grid-cols-3 gap-6 hidden" data-panel="mifi">
-      @foreach ([
-        ['t'=>"MiFi – Lite",'p'=>"$1,299",'f'=>['Equipo 4G LTE','Hasta 8 dispositivos','Batería 1500 mAh']],
-        ['t'=>"MiFi – Plus",'p'=>"$1,899",'f'=>['Hasta 15 dispositivos','Batería 3000 mAh','Garantía extendida']],
-        ['t'=>"MiFi – Pro",'p'=>"$2,499",'f'=>['Dual band','Gestión remota','Soporta SIM/eSIM']],
-      ] as $kit)
-      <article class="pricing-card">
-        <span class="pricing-card__border"></span>
-        <div class="relative z-[1] p-6">
-          <h3 class="text-lg font-semibold text-slate-900">{{ $kit['t'] }}</h3>
-          <div class="mt-3 flex items-end gap-1">
-            <span class="text-2xl font-extrabold text-slate-900">{{ $kit['p'] }}</span>
-            <span class="text-slate-500 text-sm">MXN</span>
-          </div>
-          <ul class="mt-4 space-y-2 text-sm text-slate-700">
-            @foreach ($kit['f'] as $f)
-            <li class="flex items-start gap-2">
-              <svg class="mt-[2px] h-4 w-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414l2.293 2.293 6.543-6.543a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/></svg>
-              {{ $f }}
-            </li>
-            @endforeach
-          </ul>
-          <a href="distribuidor/solicitud" class="btn-cta mt-6">Seleccionar</a>
-        </div>
-      </article>
-      @endforeach
-    </div>
-  </div>
 </section>
 
 <style>
