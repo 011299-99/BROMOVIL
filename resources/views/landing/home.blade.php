@@ -11,5 +11,5 @@
   @include('landing.partials.section_testimonios')
   @include('landing.partials.section_faq')
   @include('landing.partials.section_banner_final')
-  @include('landing.partials.section_form')
+
 @endsection

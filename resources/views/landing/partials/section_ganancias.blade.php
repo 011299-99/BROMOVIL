@@ -67,11 +67,11 @@
             <span class="pill" id="out-residual-badge">4%</span>
             <label class="flex items-center gap-2 text-sm select-none">
               <input id="in-doble" type="checkbox" class="toggle">
-              <span>Activaste + de 30 líneas (duplica a 8%)</span>
+              <span>Activaste + de 30 líneas (aumenta un 8%)</span>
             </label>
           </div>
           <p class="helper mt-2">
-            Residual por <u>activación</u> (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>. Con 8% se duplica.
+            Residual por <u>activación</u> (4%): Básico <b>$3.96</b>, Ideal <b>$7.97</b>, Poderoso <b>$8.76</b>
             <br><b>Nota:</b> El residual se paga solo por <u>SIMs activadas</u>.
           </p>
 
